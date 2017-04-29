@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.blacknebula.ghostsms.MainActivity">
+    tools:context="com.blacknebula.ghostsms.activity.MainActivity">
 
     <TextView
         android:layout_width="wrap_content"
@@ -28,6 +28,11 @@
 
     <EditText
         android:id="@+id/encryptedMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/encryptedSecretKey"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <Button

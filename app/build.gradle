@@ -31,7 +31,11 @@ dependencies {
     compile 'com.jakewharton:butterknife:6.+'
     //guava
     compile 'com.google.guava:guava:20.0'
-    //apache common-codec
+    //apache
     compile group: 'commons-codec', name: 'commons-codec', version: '1.9'
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
+    //Gson
+    compile 'com.google.code.gson:gson:2.8.0'
+
 
 }
