@@ -6,7 +6,7 @@ import com.google.common.base.Optional;
 
 public class Logger {
 
-    final static private String NAME = "com.blacknebula.ghostsms";
+    final static private String NAME = "com.blacknebula.GS";
 
     public enum Type {
         GHOST_SMS;
