@@ -15,16 +15,11 @@ import android.widget.EditText;
 
 import com.blacknebula.ghostsms.GhostSmsApplication;
 import com.blacknebula.ghostsms.R;
-import com.blacknebula.ghostsms.encryption.DecryptionResult;
-import com.blacknebula.ghostsms.encryption.Decryptor;
-import com.blacknebula.ghostsms.encryption.EncryptionResult;
-import com.blacknebula.ghostsms.encryption.Encryptor;
 import com.blacknebula.ghostsms.encryption.KeyGenerator;
+import com.blacknebula.ghostsms.encryption.SmsEncryptionWrapper;
 import com.blacknebula.ghostsms.utils.FileUtils;
 import com.blacknebula.ghostsms.utils.Logger;
-import com.blacknebula.ghostsms.utils.StringUtils;
 import com.blacknebula.ghostsms.utils.ViewUtils;
-import com.google.gson.Gson;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -159,11 +154,8 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.encrypt)
     public void encrypt(View view) {
         try {
-            final EncryptionResult encryptedResult = Encryptor.encrypt(message.getText().toString());
-            final String json = new Gson().toJson(encryptedResult);
-            final byte[] messageBase64 = StringUtils.encodeBase64(StringUtils.fromStringToBytes(json));
-            encryptedMessageBase64.setText(StringUtils.fromBytesToString(messageBase64));
-
+            final String encrypted = SmsEncryptionWrapper.encrypt(message.getText().toString());
+            encryptedMessageBase64.setText(encrypted);
         } catch (Exception e) {
             Logger.error(Logger.Type.GHOST_SMS, e, "Error while encrypting a message");
         }
@@ -177,18 +169,8 @@ public class MainActivity extends AppCompatActivity {
             encryptedSecretKey.setText("");
             decryptedMessage.setText("");
             // decrypt
-            final String emb64 = encryptedMessageBase64.getText().toString();
-            if (StringUtils.isEmpty(emb64, true) || !StringUtils.isBase64Encoded(emb64)) {
-                Logger.error(Logger.Type.GHOST_SMS, "value not base64 encoded");
-                return;
-            }
-            final byte[] jsonBase64 = StringUtils.decodeBase64(emb64);
-            final String json = StringUtils.fromBytesToString(jsonBase64);
-            final EncryptionResult encryptedResult = new Gson().fromJson(json, EncryptionResult.class);
-            encryptedMessage.setText(encryptedResult.getEncryptedMessage());
-            encryptedSecretKey.setText(encryptedResult.getEncryptedSecretKey());
-            final DecryptionResult decryptionResult = Decryptor.decrypt(encryptedResult.getEncryptedMessage(), encryptedResult.getEncryptedSecretKey());
-            decryptedMessage.setText(decryptionResult.getMessage());
+            final String message = SmsEncryptionWrapper.decrypt(encryptedMessageBase64.getText().toString());
+            this.decryptedMessage.setText(message);
         } catch (Exception e) {
             Logger.error(Logger.Type.GHOST_SMS, e, "Error while decrypting a message");
         }

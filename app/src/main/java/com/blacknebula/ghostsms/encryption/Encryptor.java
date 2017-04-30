@@ -17,6 +17,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class Encryptor {
 
+    /**
+     * todo should select which public key will be used in accordance with SMS destination
+     */
     public static EncryptionResult encrypt(String message) throws IOException, GeneralSecurityException {
         //encrypt secret key
         final SecretKeySpec secretKey = KeyGenerator.generateSecretKey();
