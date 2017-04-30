@@ -19,6 +19,10 @@ android {
     }
 }
 
+configurations {
+    custom
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -32,10 +36,9 @@ dependencies {
     //guava
     compile 'com.google.guava:guava:20.0'
     //apache
-    compile group: 'commons-codec', name: 'commons-codec', version: '1.9'
-    compile group: 'commons-io', name: 'commons-io', version: '2.5'
+    compile 'commons-codec:commons-codec:1.10'
+    compile 'commons-io:commons-io:2.5'
     //Gson
     compile 'com.google.code.gson:gson:2.8.0'
-
 
 }

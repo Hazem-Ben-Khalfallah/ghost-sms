@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Ghost SMS</string>
+    <string name="read_sms_request_permission_title">Read SMS permission</string>
+    <string name="read_sms_request_permission_message">Permission to read SMS is needed for this app</string>
+    <string name="send_sms_request_permission_title">Send SMS permission</string>
+    <string name="send_sms_request_permission_message">Permission to Send SMS is needed for this app</string>
+    <string name="receive_sms_request_permission_title">Receive SMS permission</string>
+    <string name="receive_sms_request_permission_message">Permission to Receive SMS is needed for this app</string>
+    <string name="sms_not_supported_title">SMS not supported</string>
+    <string name="sms_not_supported_message">Your device probably does not support SMS</string>
 </resources>

@@ -2,6 +2,7 @@ package com.blacknebula.ghostsms.encryption;
 
 import com.blacknebula.ghostsms.GhostSmsApplication;
 import com.blacknebula.ghostsms.utils.FileUtils;
+import com.blacknebula.ghostsms.utils.Logger;
 import com.blacknebula.ghostsms.utils.StringUtils;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ public class Encryptor {
         //encrypt message
         final byte[] encryptedMessage = MessageEncryption.Encrypt(message, secretKey, "AES");
 
-        return new EncryptionResult(StringUtils.fromBytesToString(encryptedSecretKey), StringUtils.fromBytesToString(encryptedMessage));
+        return new EncryptionResult(encryptedSecretKey, encryptedMessage);
     }
 
     public static PublicKey getPublic(String filename, String algorithm) throws NoSuchAlgorithmException, InvalidKeySpecException {

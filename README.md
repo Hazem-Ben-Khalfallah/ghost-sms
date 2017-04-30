@@ -1,7 +1,8 @@
 # Ghost SMS
 
 ## Improvements
-* generate key pair only once
+* add user authentication
+* save keys in external storage
 * give the user the possibility to regenerate his keys
 * get other members public key / search for public keys
 * encode with destination public key

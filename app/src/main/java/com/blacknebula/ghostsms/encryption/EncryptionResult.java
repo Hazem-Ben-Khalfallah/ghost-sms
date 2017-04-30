@@ -1,5 +1,7 @@
 package com.blacknebula.ghostsms.encryption;
 
+import com.blacknebula.ghostsms.utils.StringUtils;
+
 /**
  * @author hazem
  */
@@ -8,9 +10,9 @@ public class EncryptionResult {
     private String encryptedSecretKey;
     private String encryptedMessage;
 
-    public EncryptionResult(String encryptedSecretKey, String encryptedMessage) {
-        this.encryptedSecretKey = encryptedSecretKey;
-        this.encryptedMessage = encryptedMessage;
+    public EncryptionResult(byte[] encryptedSecretKey, byte[] encryptedMessage) {
+        this.encryptedSecretKey = StringUtils.fromBytesToString(encryptedSecretKey);
+        this.encryptedMessage = StringUtils.fromBytesToString(encryptedMessage);
     }
 
     public String getEncryptedSecretKey() {

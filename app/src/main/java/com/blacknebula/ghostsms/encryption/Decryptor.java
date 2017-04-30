@@ -19,7 +19,7 @@ public class Decryptor {
                 getPrivate(KeyGenerator.PRIVATE_KEY_PATH, "RSA"), "RSA");
         final byte[] message = MessageDecryption.decrypt(StringUtils.fromStringToBytes(encryptedMessage),
                 new SecretKeySpec(secretKey, "AES"), "AES");
-        return new DecryptionResult(StringUtils.fromBytesToString(message), StringUtils.fromBytesToString(secretKey));
+        return new DecryptionResult(message, secretKey);
     }
 
     public static PrivateKey getPrivate(String filename, String algorithm) throws NoSuchAlgorithmException, InvalidKeySpecException {

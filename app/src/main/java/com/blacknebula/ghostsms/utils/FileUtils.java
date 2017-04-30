@@ -2,7 +2,6 @@ package com.blacknebula.ghostsms.utils;
 
 import android.content.Context;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,8 +35,13 @@ public class FileUtils {
         return new byte[]{};
     }
 
-    public static boolean exists(String filePath) {
-        final File file = new File(filePath);
-        return file.exists();
+    public static boolean exists(String fileName, Context context) {
+        final String[] fileList = context.fileList();
+        for (String file : fileList) {
+            if (file.equals(fileName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
