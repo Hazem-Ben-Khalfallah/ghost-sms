@@ -38,7 +38,7 @@ public class SmsReceiver extends BroadcastReceiver {
                     Logger.error(Logger.Type.GHOST_SMS, e, "Error while decrypting the SMS");
                 }
                 Toast.makeText(context, phone + ": " + decrypted, Toast.LENGTH_SHORT).show();
-                Logger.info(Logger.Type.GHOST_SMS, "%s: %s \n %s", phone, message, decrypted);
+                Logger.info(Logger.Type.GHOST_SMS, "Sender: %s: \n Original: %s \n Decrypted: %s", phone, message, decrypted);
             }
         }
     }

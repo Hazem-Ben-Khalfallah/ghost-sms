@@ -19,12 +19,12 @@ public class SmsEncryptionWrapper {
         return StringUtils.fromBytesToString(messageBase64);
     }
 
-    public static String decrypt(String encryptedMessage) throws Exception {
-        if (StringUtils.isEmpty(encryptedMessage, true) || !StringUtils.isBase64Encoded(encryptedMessage)) {
+    public static String decrypt(String receivedMessage) throws Exception {
+        if (StringUtils.isEmpty(receivedMessage, true) || !StringUtils.isBase64Encoded(receivedMessage)) {
             Logger.error(Logger.Type.GHOST_SMS, "value not base64 encoded");
-            return encryptedMessage;
+            return receivedMessage;
         }
-        final byte[] jsonBase64 = StringUtils.decodeBase64(encryptedMessage);
+        final byte[] jsonBase64 = StringUtils.decodeBase64(receivedMessage);
         final String json = StringUtils.fromBytesToString(jsonBase64);
         final EncryptionResult encryptedResult = new Gson().fromJson(json, EncryptionResult.class);
         final DecryptionResult decryptionResult = Decryptor.decrypt(encryptedResult.getEncryptedMessage(), encryptedResult.getEncryptedSecretKey());

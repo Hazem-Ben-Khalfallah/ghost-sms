@@ -2,7 +2,7 @@
 
 ## Improvements
 * add user authentication
-* save keys in external storage
+* send personal public key along with message
 * give the user the possibility to regenerate his keys
 * get other members public key / search for public keys
 * encode with destination public key
