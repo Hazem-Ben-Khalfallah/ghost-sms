@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ import static com.andrognito.patternlockview.PatternLockView.PatternViewMode.WRO
 
 public class LockActivity extends AppCompatActivity {
 
+    private static final int MAX_ATTEMPTS = 3;
     private static String LOCK_PATTERN = "lock_pattern";
 
     @InjectView(R.id.pattern_lock_view)
@@ -38,17 +40,18 @@ public class LockActivity extends AppCompatActivity {
     TextView title;
 
     private String tmpLockPattern;
+    private Animation shakeAnimation;
+    private int unlockAttempts = 0;
 
     private PatternLockViewListener mPatternLockViewListener = new PatternLockViewListener() {
         @Override
         public void onStarted() {
-            Logger.info(Logger.Type.GHOST_SMS, "Pattern drawing started");
+            // do nothing
         }
 
         @Override
         public void onProgress(List<PatternLockView.Dot> progressPattern) {
-            Logger.info(Logger.Type.GHOST_SMS, "Pattern progress: " +
-                    PatternLockUtils.patternToString(patternLockView, progressPattern));
+            // do nothing
         }
 
         @Override
@@ -73,8 +76,9 @@ public class LockActivity extends AppCompatActivity {
 
         @Override
         public void onCleared() {
-            Logger.info(Logger.Type.GHOST_SMS, "Pattern has been cleared");
+            // do nothing
         }
+
     };
 
     private boolean initializeLockPattern(String insertedPattern) {
@@ -90,7 +94,7 @@ public class LockActivity extends AppCompatActivity {
                 return true;
             } else {
                 title.setText(R.string.new_pattern_lock);
-                title.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shakeanim));
+                title.startAnimation(shakeAnimation);
                 patternLockView.clearPattern();
                 tmpLockPattern = null;
             }
@@ -103,7 +107,13 @@ public class LockActivity extends AppCompatActivity {
             patternLockView.setViewMode(CORRECT);
             return true;
         } else {
+            unlockAttempts++;
+            if (unlockAttempts >= MAX_ATTEMPTS) {
+                finish();
+            }
             patternLockView.setViewMode(WRONG);
+            title.startAnimation(shakeAnimation);
+
         }
 
         return false;
@@ -120,6 +130,8 @@ public class LockActivity extends AppCompatActivity {
         if (StringUtils.isEmpty(lockPattern)) {
             title.setText(R.string.new_pattern_lock);
         }
+
+        shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shakeanim);
     }
 
     @OnClick(R.id.pattern_lock_layout)
