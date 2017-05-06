@@ -40,5 +40,6 @@ dependencies {
     compile 'commons-io:commons-io:2.5'
     //Gson
     compile 'com.google.code.gson:gson:2.8.0'
-
+    //pattern lock
+    compile 'com.andrognito.patternlockview:patternlockview:1.0.0'
 }

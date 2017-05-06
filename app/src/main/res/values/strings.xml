@@ -8,4 +8,7 @@
     <string name="receive_sms_request_permission_message">Permission to Receive SMS is needed for this app</string>
     <string name="sms_not_supported_title">SMS not supported</string>
     <string name="sms_not_supported_message">Your device probably does not support SMS</string>
+    <string name="new_pattern_lock">New pattern lock</string>
+    <string name="repeat_pattern_lock">Repeat pattern lock</string>
+    <string name="unlock_app">Enter pattern lock</string>
 </resources>

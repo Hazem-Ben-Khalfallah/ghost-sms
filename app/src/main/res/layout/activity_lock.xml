@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/pattern_lock_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context="com.blacknebula.ghostsms.activity.LockActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            style="@style/HeaderTextStyle"
+            android:text="@string/unlock_app"/>
+
+        <com.andrognito.patternlockview.PatternLockView
+            android:id="@+id/pattern_lock_view"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_gravity="center"
+
+            app:aspectRatio="square"
+            app:aspectRatioEnabled="true"
+            app:correctStateColor="@color/correct"
+            app:dotAnimationDuration="200"
+            app:dotCount="3"
+            app:dotNormalSize="12dp"
+            app:dotSelectedSize="24dp"
+            app:normalStateColor="@color/colorPrimary"
+            app:pathEndAnimationDuration="100"
+            app:pathWidth="4dp"
+            app:wrongStateColor="@color/pomegranate" />
+
+    </LinearLayout>
+</RelativeLayout>
