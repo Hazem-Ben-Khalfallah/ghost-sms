@@ -14,6 +14,8 @@ import com.andrognito.patternlockview.listener.PatternLockViewListener;
 import com.andrognito.patternlockview.utils.PatternLockUtils;
 import com.blacknebula.ghostsms.GhostSmsApplication;
 import com.blacknebula.ghostsms.R;
+import com.blacknebula.ghostsms.encryption.KeyGenerator;
+import com.blacknebula.ghostsms.utils.FileUtils;
 import com.blacknebula.ghostsms.utils.Logger;
 import com.blacknebula.ghostsms.utils.PreferenceUtils;
 import com.blacknebula.ghostsms.utils.StringUtils;
@@ -59,7 +61,7 @@ public class LockActivity extends AppCompatActivity {
             if (pattern == null || pattern.isEmpty()) {
                 return;
             }
-            final String insertedPattern = PatternLockUtils.patternToMD5(patternLockView, pattern);
+            final String insertedPattern = PatternLockUtils.patternToSha1(patternLockView, pattern);
             Logger.info(Logger.Type.GHOST_SMS, "Pattern complete: %s", insertedPattern);
             final String lockPattern = PreferenceUtils.getString(LOCK_PATTERN, "");
             boolean isValid;
@@ -82,24 +84,39 @@ public class LockActivity extends AppCompatActivity {
     };
 
     private boolean initializeLockPattern(String insertedPattern) {
+        patternLockView.clearPattern();
         if (StringUtils.isEmpty(tmpLockPattern)) {
-            patternLockView.clearPattern();
+            resetKeys();
             title.setText(R.string.repeat_pattern_lock);
             tmpLockPattern = insertedPattern;
-            patternLockView.setViewMode(CORRECT);
         } else {
             if (tmpLockPattern.equals(insertedPattern)) {
                 PreferenceUtils.getPreferences().edit().putString(LOCK_PATTERN, insertedPattern).apply();
-                patternLockView.setViewMode(CORRECT);
+                title.setText(R.string.unlock_app);
                 return true;
             } else {
                 title.setText(R.string.new_pattern_lock);
                 title.startAnimation(shakeAnimation);
-                patternLockView.clearPattern();
                 tmpLockPattern = null;
             }
         }
         return false;
+    }
+
+    private void resetKeys() {
+        FileUtils.readFromFile(KeyGenerator.PUBLIC_KEY_PATH, this);
+        FileUtils.readFromFile(KeyGenerator.PRIVATE_KEY_PATH, this);
+
+        if (!FileUtils.exists(KeyGenerator.PUBLIC_KEY_PATH, this) || !FileUtils.exists(KeyGenerator.PRIVATE_KEY_PATH, this)) {
+            Logger.info(Logger.Type.GHOST_SMS, "generating encryption keys");
+            try {
+                KeyGenerator.generateRSAKeys(GhostSmsApplication.getAppContext());
+            } catch (Exception e) {
+                Logger.error(Logger.Type.GHOST_SMS, e, "Error while generating keys");
+            }
+        } else {
+            Logger.info(Logger.Type.GHOST_SMS, "Encryption keys already exist");
+        }
     }
 
     private boolean validateLockPattern(String insertedPattern, String lockPattern) {

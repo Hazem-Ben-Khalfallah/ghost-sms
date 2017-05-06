@@ -13,11 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.blacknebula.ghostsms.GhostSmsApplication;
 import com.blacknebula.ghostsms.R;
-import com.blacknebula.ghostsms.encryption.KeyGenerator;
 import com.blacknebula.ghostsms.encryption.SmsEncryptionWrapper;
-import com.blacknebula.ghostsms.utils.FileUtils;
 import com.blacknebula.ghostsms.utils.Logger;
 import com.blacknebula.ghostsms.utils.ViewUtils;
 
@@ -51,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
         if (checkSmsSupport()) {
-            //requestReadSmsPermission();
+            requestReadSmsPermission();
             requestSendSmsPermission();
             requestReceiveSmsPermission();
         } else {
@@ -63,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-
     }
 
     @Override
@@ -116,19 +112,6 @@ public class MainActivity extends AppCompatActivity {
 
             // other 'case' lines to check for other
             // permissions this app might request
-        }
-    }
-
-    private void generateKeys() {
-        if (!FileUtils.exists(KeyGenerator.PUBLIC_KEY_PATH, this) || !FileUtils.exists(KeyGenerator.PRIVATE_KEY_PATH, this)) {
-            Logger.info(Logger.Type.GHOST_SMS, "generating encryption keys");
-            try {
-                KeyGenerator.generateRSAKeys(GhostSmsApplication.getAppContext());
-            } catch (Exception e) {
-                Logger.error(Logger.Type.GHOST_SMS, e, "Error while generating keys");
-            }
-        } else {
-            Logger.info(Logger.Type.GHOST_SMS, "Encryption keys already exist");
         }
     }
 
