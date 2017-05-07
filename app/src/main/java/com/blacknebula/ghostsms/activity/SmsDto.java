@@ -1,12 +1,14 @@
 package com.blacknebula.ghostsms.activity;
 
-import java.util.Date;
+import org.parceler.Parcel;
+import org.parceler.ParcelConstructor;
 
 /**
  * @author hazem
  */
-
+@Parcel
 public class SmsDto {
+    private String id;
     private String phone;
     private String message;
     private Long date;
@@ -16,7 +18,9 @@ public class SmsDto {
     }
 
 
-    public SmsDto(String phone, String message, Long date, boolean read) {
+    @ParcelConstructor
+    public SmsDto(String id, String phone, String message, Long date, boolean read) {
+        this.id = id;
         this.phone = phone;
         this.message = message;
         this.date = date;
@@ -53,5 +57,13 @@ public class SmsDto {
 
     public void setRead(boolean read) {
         this.read = read;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

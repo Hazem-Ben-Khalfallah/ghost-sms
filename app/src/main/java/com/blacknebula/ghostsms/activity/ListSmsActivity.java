@@ -8,12 +8,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.blacknebula.ghostsms.GhostSmsApplication;
 import com.blacknebula.ghostsms.R;
@@ -22,6 +22,8 @@ import com.blacknebula.ghostsms.utils.SmsUtils;
 import com.blacknebula.ghostsms.utils.ViewUtils;
 import com.wdullaer.swipeactionadapter.SwipeActionAdapter;
 import com.wdullaer.swipeactionadapter.SwipeDirection;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -201,33 +203,42 @@ public class ListSmsActivity extends ListActivity implements
     }
 
     private List<SmsDto> listSms() {
+        readSms();
+
         final List<SmsDto> smsList = new ArrayList<>();
-        SmsDto sms;
         final Cursor cursor = getContentResolver()
                 .query(Uri.parse("content://sms/inbox"), null, null, null, null);
 
         if (cursor.moveToFirst()) { // must check the result to prevent exception
             do {
-                String address = cursor.getString(cursor.getColumnIndex("address"));
-                String body = cursor.getString(cursor.getColumnIndex("body"));
-                long date = cursor.getLong(cursor.getColumnIndex("date"));
-                boolean read = cursor.getInt(cursor.getColumnIndex("read")) > 0;
-                // address, date, body , seen
-                sms = new SmsDto(address, body, date, read);
-                smsList.add(sms);
+                smsList.add(SmsCursorTransformer.transform(cursor));
             } while (cursor.moveToNext());
         }
 
         return smsList;
     }
 
+    private void readSms() {
+        final Cursor cursor = getContentResolver()
+                .query(Uri.parse("content://sms/inbox"), null, null, null, null);
+
+        if (cursor.moveToFirst()) { // must check the result to prevent exception
+            do {
+                String msgData = "";
+                for (int idx = 0; idx < cursor.getColumnCount(); idx++) {
+                    msgData += " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx) + "\n";
+                }
+                Logger.info(Logger.Type.GHOST_SMS, "*** %s", msgData);
+                // use msgData
+            } while (cursor.moveToNext());
+        } else {
+            // empty box, no SMS
+        }
+    }
+
     @Override
     protected void onListItemClick(ListView listView, View view, int position, long id) {
-        Toast.makeText(
-                this,
-                "Clicked " + mAdapter.getItem(position),
-                Toast.LENGTH_SHORT
-        ).show();
+        openSmsDetails(position);
     }
 
     @Override
@@ -247,25 +258,43 @@ public class ListSmsActivity extends ListActivity implements
         for (int i = 0; i < positionList.length; i++) {
             SwipeDirection direction = directionList[i];
             int position = positionList[i];
-            String dir = "";
 
             switch (direction) {
                 case DIRECTION_FAR_LEFT:
                 case DIRECTION_NORMAL_LEFT:
-                    dir = "Left";
+                    openSmsDetails(position);
                     break;
                 case DIRECTION_FAR_RIGHT:
                 case DIRECTION_NORMAL_RIGHT:
-                    dir = "Right";
+                    removeSms(position);
                     break;
             }
-            Toast.makeText(
-                    this,
-                    dir + " swipe Action triggered on " + mAdapter.getItem(position),
-                    Toast.LENGTH_SHORT
-            ).show();
+
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    private void removeSms(int position) {
+        final SmsDto sms = (SmsDto) mAdapter.getItem(position);
+        ViewUtils.openDialog(this, R.string.sms_remove_title, R.string.sms_remove_description, new ViewUtils.OnActionListener() {
+            @Override
+            public void onPositiveClick() {
+                //todo
+            }
+
+            @Override
+            public void onNegativeClick() {
+
+            }
+        });
+    }
+
+    private void openSmsDetails(int position) {
+        final SmsDto sms = (SmsDto) mAdapter.getItem(position);
+        final Intent intent = new Intent(GhostSmsApplication.getAppContext(), OpenSmsActivity.class);
+        Parcelable parcelable = Parcels.wrap(sms);
+        intent.putExtra(OpenSmsActivity.SMS_DETAILS, parcelable);
+        startActivity(intent);
     }
 
     @OnClick(R.id.compose)

@@ -44,4 +44,7 @@ dependencies {
     compile 'com.andrognito.patternlockview:patternlockview:1.0.0'
     // recycler view
     compile 'com.wdullaer:swipeactionadapter:2.0.0'
+    //parceler
+    compile 'org.parceler:parceler-api:1.1.6'
+    annotationProcessor "org.parceler:parceler:1.1.6"
 }

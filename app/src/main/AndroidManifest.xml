@@ -16,14 +16,6 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".activity.ComposeActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".activity.ListSmsActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".activity.LockActivity"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -32,6 +24,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".activity.OpenSmsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.ListSmsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.ComposeActivity"
+            android:screenOrientation="portrait" />
 
         <receiver
             android:name=".SmsReceiver"

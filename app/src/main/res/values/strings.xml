@@ -14,4 +14,6 @@
     <string name="compose">Compose</string>
     <string name="reply">Reply</string>
     <string name="remove">Remove</string>
+    <string name="sms_remove_title">Remove Sms</string>
+    <string name="sms_remove_description">1 Sms will be deleted</string>
 </resources>
