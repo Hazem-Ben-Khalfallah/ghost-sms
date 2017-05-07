@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#000</color>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <!-- app colors -->
+    <color name="colorPrimary">#ffffbb33</color>
+    <color name="colorPrimaryDark">#ffff8800</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="correct">#007F00</color>
+    <!-- lock colors -->
+    <color name="pin_wrong">#f4511e</color>
+    <color name="pin_correct">#ff99cc00</color>
+    <color name="pin_normal">#39cccccc</color>
+    <!-- default colors -->
     <color name="white">#FFF</color>
+    <color name="black">#000</color>
 </resources>

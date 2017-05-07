@@ -29,15 +29,15 @@
 
             app:aspectRatio="square"
             app:aspectRatioEnabled="true"
-            app:correctStateColor="@color/correct"
+            app:correctStateColor="@color/pin_correct"
             app:dotAnimationDuration="200"
             app:dotCount="3"
             app:dotNormalSize="12dp"
             app:dotSelectedSize="24dp"
-            app:normalStateColor="@color/colorPrimary"
+            app:normalStateColor="@color/pin_normal"
             app:pathEndAnimationDuration="100"
             app:pathWidth="4dp"
-            app:wrongStateColor="@color/pomegranate" />
+            app:wrongStateColor="@color/pin_wrong" />
 
     </LinearLayout>
 </RelativeLayout>

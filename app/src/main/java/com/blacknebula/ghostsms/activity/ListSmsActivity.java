@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -78,9 +77,9 @@ public class ListSmsActivity extends ListActivity implements
         setListAdapter(mAdapter);
 
         mAdapter.addBackground(SwipeDirection.DIRECTION_FAR_LEFT, R.layout.row_bg_left_far)
-                .addBackground(SwipeDirection.DIRECTION_NORMAL_LEFT, R.layout.row_bg_left)
+                .addBackground(SwipeDirection.DIRECTION_NORMAL_LEFT, R.layout.row_bg_left_far)
                 .addBackground(SwipeDirection.DIRECTION_FAR_RIGHT, R.layout.row_bg_right_far)
-                .addBackground(SwipeDirection.DIRECTION_NORMAL_RIGHT, R.layout.row_bg_right);
+                .addBackground(SwipeDirection.DIRECTION_NORMAL_RIGHT, R.layout.row_bg_right_far);
     }
 
     @Override
@@ -252,17 +251,11 @@ public class ListSmsActivity extends ListActivity implements
 
             switch (direction) {
                 case DIRECTION_FAR_LEFT:
-                    dir = "Far left";
-                    break;
                 case DIRECTION_NORMAL_LEFT:
                     dir = "Left";
                     break;
                 case DIRECTION_FAR_RIGHT:
-                    dir = "Far right";
-                    break;
                 case DIRECTION_NORMAL_RIGHT:
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Test Dialog").setMessage("You swiped right").create().show();
                     dir = "Right";
                     break;
             }

@@ -16,4 +16,12 @@
         <item name="android:textSize">15sp</item>
     </style>
 
+    <style name="ComposeButtonStyle">
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+
 </resources>

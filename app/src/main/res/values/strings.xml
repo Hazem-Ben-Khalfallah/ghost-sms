@@ -12,4 +12,6 @@
     <string name="repeat_pattern_lock">Repeat pattern lock</string>
     <string name="unlock_app">Enter pattern lock</string>
     <string name="compose">Compose</string>
+    <string name="reply">Reply</string>
+    <string name="remove">Remove</string>
 </resources>

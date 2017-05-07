@@ -19,11 +19,12 @@
 
     <Button
         android:id="@+id/compose"
+        style="@style/HeaderTextStyle"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/colorPrimary"
-        android:textColor="@color/white"
         android:layout_weight="@integer/compose_button_weight"
-        android:text="@string/compose" />
+        android:background="@android:color/holo_orange_light"
+        android:text="@string/compose"
+        android:textColor="@color/white" />
 
 </LinearLayout>
