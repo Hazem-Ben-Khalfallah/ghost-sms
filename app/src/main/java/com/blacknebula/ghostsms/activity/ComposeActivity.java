@@ -2,8 +2,6 @@ package com.blacknebula.ghostsms.activity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -16,14 +14,14 @@ import android.widget.EditText;
 import com.blacknebula.ghostsms.R;
 import com.blacknebula.ghostsms.encryption.SmsEncryptionWrapper;
 import com.blacknebula.ghostsms.utils.Logger;
+import com.blacknebula.ghostsms.utils.SmsUtils;
 import com.blacknebula.ghostsms.utils.ViewUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity {
-    private static final int READ_SMS_REQUEST_CODE = 1;
+public class ComposeActivity extends AppCompatActivity {
     private static final int SEND_SMS_REQUEST_CODE = 2;
     private static final int RECEIVE_SMS_REQUEST_CODE = 3;
 
@@ -45,10 +43,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_compose);
         ButterKnife.inject(this);
-        if (checkSmsSupport()) {
-            requestReadSmsPermission();
+        if (SmsUtils.checkSmsSupport()) {
             requestSendSmsPermission();
             requestReceiveSmsPermission();
         } else {
@@ -65,21 +62,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case READ_SMS_REQUEST_CODE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! do what you have to do
-                    readSms();
-
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    Logger.warn(Logger.Type.GHOST_SMS, "%s: Permission Denied!", "Read sms");
-                    finish();
-                }
-                return;
-            }
             case SEND_SMS_REQUEST_CODE: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -115,24 +97,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void readSms() {
-        final Cursor cursor = getContentResolver()
-                .query(Uri.parse("content://sms/inbox"), null, null, null, null);
-
-        if (cursor.moveToFirst()) { // must check the result to prevent exception
-            do {
-                String msgData = "";
-                for (int idx = 0; idx < cursor.getColumnCount(); idx++) {
-                    msgData += " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx);
-                }
-                Logger.info(Logger.Type.GHOST_SMS, "*** %s", msgData);
-                // use msgData
-            } while (cursor.moveToNext());
-        } else {
-            // empty box, no SMS
-        }
-    }
-
 
     @OnClick(R.id.encrypt)
     public void encrypt(View view) {
@@ -159,48 +123,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void requestReadSmsPermission() {
-        //check API version, do nothing if API version < 23!
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
-
-                // Should we show an explanation?
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_SMS)) {
-
-                    // Show an explanation to the user *asynchronously* -- don't block
-                    // this thread waiting for the user's response! After the user
-                    // sees the explanation, try again to request the permission.
-                    ViewUtils.openDialog(this, R.string.read_sms_request_permission_title, R.string.read_sms_request_permission_message, new ViewUtils.OnActionListener() {
-                        @Override
-                        public void onPositiveClick() {
-                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_SMS}, READ_SMS_REQUEST_CODE);
-                        }
-
-                        @Override
-                        public void onNegativeClick() {
-                            // permission denied, boo! Disable the
-                            // functionality that depends on this permission.
-                            Logger.warn(Logger.Type.GHOST_SMS, "%s: Permission Denied!", "Read SMS");
-                            finish();
-                        }
-                    });
-
-                } else {
-                    // No explanation needed, we can request the permission.
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_SMS}, READ_SMS_REQUEST_CODE);
-                }
-            } else {
-                // Permission already granted
-                readSms();
-            }
-        }
-    }
-
-    private boolean checkSmsSupport() {
-        final PackageManager pm = this.getPackageManager();
-        return pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY) || pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY_CDMA);
-    }
 
     private void requestSendSmsPermission() {
         //check API version, do nothing if API version < 23!
@@ -217,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                     ViewUtils.openDialog(this, R.string.send_sms_request_permission_title, R.string.send_sms_request_permission_message, new ViewUtils.OnActionListener() {
                         @Override
                         public void onPositiveClick() {
-                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_REQUEST_CODE);
+                            ActivityCompat.requestPermissions(ComposeActivity.this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_REQUEST_CODE);
                         }
 
                         @Override
@@ -254,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                     ViewUtils.openDialog(this, R.string.receive_sms_request_permission_title, R.string.receive_sms_request_permission_message, new ViewUtils.OnActionListener() {
                         @Override
                         public void onPositiveClick() {
-                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECEIVE_SMS}, RECEIVE_SMS_REQUEST_CODE);
+                            ActivityCompat.requestPermissions(ComposeActivity.this, new String[]{Manifest.permission.RECEIVE_SMS}, RECEIVE_SMS_REQUEST_CODE);
                         }
 
                         @Override

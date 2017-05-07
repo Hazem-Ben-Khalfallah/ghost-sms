@@ -15,7 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.ComposeActivity" />
+
+        <activity android:name=".activity.ListSmsActivity" />
 
         <activity android:name=".activity.LockActivity">
             <intent-filter>

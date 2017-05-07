@@ -42,4 +42,6 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.0'
     //pattern lock
     compile 'com.andrognito.patternlockview:patternlockview:1.0.0'
+    // recycler view
+    compile 'com.wdullaer:swipeactionadapter:2.0.0'
 }

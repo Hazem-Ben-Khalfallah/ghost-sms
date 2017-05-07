@@ -19,6 +19,7 @@ import com.blacknebula.ghostsms.utils.FileUtils;
 import com.blacknebula.ghostsms.utils.Logger;
 import com.blacknebula.ghostsms.utils.PreferenceUtils;
 import com.blacknebula.ghostsms.utils.StringUtils;
+import com.blacknebula.ghostsms.utils.ThreadUtils;
 
 import java.util.List;
 
@@ -70,8 +71,14 @@ public class LockActivity extends AppCompatActivity {
             } else {
                 isValid = initializeLockPattern(insertedPattern);
             }
+            ThreadUtils.delay(1000, new Runnable() {
+                @Override
+                public void run() {
+                    patternLockView.clearPattern();
+                }
+            });
             if (isValid) {
-                final Intent intent = new Intent(GhostSmsApplication.getAppContext(), MainActivity.class);
+                final Intent intent = new Intent(GhostSmsApplication.getAppContext(), ListSmsActivity.class);
                 startActivity(intent);
             }
         }
@@ -84,19 +91,20 @@ public class LockActivity extends AppCompatActivity {
     };
 
     private boolean initializeLockPattern(String insertedPattern) {
-        patternLockView.clearPattern();
         if (StringUtils.isEmpty(tmpLockPattern)) {
             resetKeys();
             title.setText(R.string.repeat_pattern_lock);
             tmpLockPattern = insertedPattern;
         } else {
             if (tmpLockPattern.equals(insertedPattern)) {
-                PreferenceUtils.getPreferences().edit().putString(LOCK_PATTERN, insertedPattern).apply();
+                patternLockView.setViewMode(CORRECT);
                 title.setText(R.string.unlock_app);
+                PreferenceUtils.getPreferences().edit().putString(LOCK_PATTERN, insertedPattern).apply();
                 return true;
             } else {
                 title.setText(R.string.new_pattern_lock);
                 title.startAnimation(shakeAnimation);
+                patternLockView.setViewMode(WRONG);
                 tmpLockPattern = null;
             }
         }
