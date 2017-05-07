@@ -22,7 +22,6 @@ import com.wdullaer.swipeactionadapter.SwipeActionAdapter;
 import com.wdullaer.swipeactionadapter.SwipeDirection;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -53,6 +52,14 @@ public class ListSmsActivity extends ListActivity implements
             });
         }
 
+        displaySmsList();
+
+    }
+
+    private void displaySmsList() {
+        if (!checkReadSmsPermission()) {
+            return;
+        }
         final List<SmsDto> content = listSms();
         final CustomUsersAdapter stringAdapter = new CustomUsersAdapter(this, content);
         mAdapter = new SwipeActionAdapter(stringAdapter);
@@ -65,7 +72,6 @@ public class ListSmsActivity extends ListActivity implements
                 .addBackground(SwipeDirection.DIRECTION_NORMAL_LEFT, R.layout.row_bg_left)
                 .addBackground(SwipeDirection.DIRECTION_FAR_RIGHT, R.layout.row_bg_right_far)
                 .addBackground(SwipeDirection.DIRECTION_NORMAL_RIGHT, R.layout.row_bg_right);
-
     }
 
     @Override
@@ -75,7 +81,7 @@ public class ListSmsActivity extends ListActivity implements
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! do what you have to do
-                    readSms();
+                    displaySmsList();
 
                 } else {
 
@@ -97,7 +103,7 @@ public class ListSmsActivity extends ListActivity implements
         //check API version, do nothing if API version < 23!
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
 
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
+            if (!checkReadSmsPermission()) {
 
                 // Should we show an explanation?
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_SMS)) {
@@ -126,27 +132,13 @@ public class ListSmsActivity extends ListActivity implements
                 }
             } else {
                 // Permission already granted
-                readSms();
+                displaySmsList();
             }
         }
     }
 
-    private void readSms() {
-        final Cursor cursor = getContentResolver()
-                .query(Uri.parse("content://sms/inbox"), null, null, null, null);
-
-        if (cursor.moveToFirst()) { // must check the result to prevent exception
-            do {
-                String msgData = "";
-                for (int idx = 0; idx < cursor.getColumnCount(); idx++) {
-                    msgData += " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx) + "\n";
-                }
-                Logger.info(Logger.Type.GHOST_SMS, "*** %s", msgData);
-                // use msgData
-            } while (cursor.moveToNext());
-        } else {
-            // empty box, no SMS
-        }
+    private boolean checkReadSmsPermission() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED;
     }
 
     private List<SmsDto> listSms() {
