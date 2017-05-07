@@ -35,6 +35,11 @@ public class CustomUsersAdapter extends ArrayAdapter<SmsDto> {
         final TextView smsDate = (TextView) convertView.findViewById(R.id.smsDate);
         // Populate the data into the template view using the data object
         phone.setText(sms.getPhone());
+        if (sms.isEncrypted()) {
+            phone.setCompoundDrawablesWithIntrinsicBounds(R.mipmap.ic_lock, 0, 0, 0);
+        } else {
+            phone.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        }
         message.setText(sms.getMessage());
 
         final long now = System.currentTimeMillis();

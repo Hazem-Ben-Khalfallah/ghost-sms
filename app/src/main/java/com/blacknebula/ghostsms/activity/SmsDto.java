@@ -13,18 +13,20 @@ public class SmsDto {
     private String message;
     private Long date;
     private boolean read;
+    private boolean encrypted;
 
     public SmsDto() {
     }
 
 
     @ParcelConstructor
-    public SmsDto(String id, String phone, String message, Long date, boolean read) {
+    public SmsDto(String id, String phone, String message, Long date, boolean read, boolean encrypted) {
         this.id = id;
         this.phone = phone;
         this.message = message;
         this.date = date;
         this.read = read;
+        this.encrypted = encrypted;
     }
 
     public String getPhone() {
@@ -65,5 +67,13 @@ public class SmsDto {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public boolean isEncrypted() {
+        return encrypted;
+    }
+
+    public void setEncrypted(boolean encrypted) {
+        this.encrypted = encrypted;
     }
 }

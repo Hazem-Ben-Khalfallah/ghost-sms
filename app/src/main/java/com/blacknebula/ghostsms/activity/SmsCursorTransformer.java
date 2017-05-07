@@ -2,6 +2,7 @@ package com.blacknebula.ghostsms.activity;
 
 import android.database.Cursor;
 
+import com.blacknebula.ghostsms.encryption.SmsEncryptionWrapper;
 import com.blacknebula.ghostsms.utils.SmsUtils;
 
 /**
@@ -14,6 +15,7 @@ public class SmsCursorTransformer {
         sms.setId(cursor.getString(cursor.getColumnIndex(SmsUtils.SmsFields.id)));
         sms.setPhone(cursor.getString(cursor.getColumnIndex(SmsUtils.SmsFields.address)));
         sms.setMessage(cursor.getString(cursor.getColumnIndex(SmsUtils.SmsFields.body)));
+        sms.setEncrypted(SmsEncryptionWrapper.isEncrypted(sms.getMessage()));
         sms.setDate(cursor.getLong(cursor.getColumnIndex(SmsUtils.SmsFields.date)));
         sms.setRead(cursor.getInt(cursor.getColumnIndex(SmsUtils.SmsFields.read)) > 0);
         return sms;

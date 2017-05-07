@@ -30,4 +30,20 @@ public class SmsEncryptionWrapper {
         final DecryptionResult decryptionResult = Decryptor.decrypt(encryptedResult.getEncryptedMessage(), encryptedResult.getEncryptedSecretKey());
         return decryptionResult.getMessage();
     }
+
+    public static boolean isEncrypted(String receivedMessage) {
+        try {
+            if (StringUtils.isEmpty(receivedMessage, true) || !StringUtils.isBase64Encoded(receivedMessage)) {
+                Logger.error(Logger.Type.GHOST_SMS, "value not base64 encoded");
+                return false;
+            }
+
+            final byte[] jsonBase64 = StringUtils.decodeBase64(receivedMessage);
+            final String json = StringUtils.fromBytesToString(jsonBase64);
+            final EncryptionResult encryptedResult = new Gson().fromJson(json, EncryptionResult.class);
+            return encryptedResult != null;
+        } catch (Exception e) {
+        }
+        return false;
+    }
 }

@@ -14,4 +14,8 @@
     <!-- list sms colors -->
     <color name="green_light">#ff99cc00</color>
     <color name="unread_sms">#29000000</color>
+    <!-- open sms colors -->
+    <color name="option_icon">#29000000</color>
+    <color name="send_icon">#ff222222</color>
+    <color name="chat_background">#29000000</color>
 </resources>

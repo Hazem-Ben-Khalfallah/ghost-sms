@@ -1,13 +1,16 @@
 package com.blacknebula.ghostsms.encryption;
 
 import com.blacknebula.ghostsms.utils.StringUtils;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * @author hazem
  */
 
 public class EncryptionResult {
+    @SerializedName("s")
     private String encryptedSecretKey;
+    @SerializedName("m")
     private String encryptedMessage;
 
     public EncryptionResult(byte[] encryptedSecretKey, byte[] encryptedMessage) {
