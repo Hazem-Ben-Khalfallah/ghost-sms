@@ -2,6 +2,7 @@ package com.blacknebula.ghostsms.activity;
 
 import android.Manifest;
 import android.app.ListActivity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -11,9 +12,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.blacknebula.ghostsms.GhostSmsApplication;
 import com.blacknebula.ghostsms.R;
 import com.blacknebula.ghostsms.utils.Logger;
 import com.blacknebula.ghostsms.utils.SmsUtils;
@@ -25,13 +28,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 
 public class ListSmsActivity extends ListActivity implements
         SwipeActionAdapter.SwipeActionListener {
 
     private static final int READ_SMS_REQUEST_CODE = 1;
+    private static final int RECEIVE_SMS_REQUEST_CODE = 3;
 
     protected SwipeActionAdapter mAdapter;
+    @InjectView(R.id.compose)
+    Button composeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +50,7 @@ public class ListSmsActivity extends ListActivity implements
 
         if (SmsUtils.checkSmsSupport()) {
             requestReadSmsPermission();
+            requestReceiveSmsPermission();
         } else {
             Logger.warn(Logger.Type.GHOST_SMS, "SMS not support for this device!");
             ViewUtils.openUniqueActionDialog(this, R.string.sms_not_supported_title, R.string.sms_not_supported_message, new ViewUtils.OnClickListener() {
@@ -92,6 +101,20 @@ public class ListSmsActivity extends ListActivity implements
                 }
                 return;
             }
+            case RECEIVE_SMS_REQUEST_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! do what you have to do
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Logger.warn(Logger.Type.GHOST_SMS, "%s: Permission Denied!", "Receive sms");
+                    finish();
+                }
+                return;
+            }
 
             // other 'case' lines to check for other
             // permissions this app might request
@@ -133,6 +156,43 @@ public class ListSmsActivity extends ListActivity implements
             } else {
                 // Permission already granted
                 displaySmsList();
+            }
+        }
+    }
+
+    private void requestReceiveSmsPermission() {
+        //check API version, do nothing if API version < 23!
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
+
+                // Should we show an explanation?
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECEIVE_SMS)) {
+
+                    // Show an explanation to the user *asynchronously* -- don't block
+                    // this thread waiting for the user's response! After the user
+                    // sees the explanation, try again to request the permission.
+                    ViewUtils.openDialog(this, R.string.receive_sms_request_permission_title, R.string.receive_sms_request_permission_message, new ViewUtils.OnActionListener() {
+                        @Override
+                        public void onPositiveClick() {
+                            ActivityCompat.requestPermissions(ListSmsActivity.this, new String[]{Manifest.permission.RECEIVE_SMS}, RECEIVE_SMS_REQUEST_CODE);
+                        }
+
+                        @Override
+                        public void onNegativeClick() {
+                            // permission denied, boo! Disable the
+                            // functionality that depends on this permission.
+                            Logger.warn(Logger.Type.GHOST_SMS, "%s: Permission Denied!", "Receive SMS");
+                            finish();
+                        }
+                    });
+
+                } else {
+                    // No explanation needed, we can request the permission.
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECEIVE_SMS}, RECEIVE_SMS_REQUEST_CODE);
+                }
+            } else {
+                // Permission already granted
             }
         }
     }
@@ -213,6 +273,12 @@ public class ListSmsActivity extends ListActivity implements
             ).show();
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    @OnClick(R.id.compose)
+    public void onComposeButtonClick(View view) {
+        final Intent intent = new Intent(GhostSmsApplication.getAppContext(), ComposeActivity.class);
+        startActivity(intent);
     }
 
 

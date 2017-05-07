@@ -15,11 +15,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activity.ComposeActivity" />
+        <activity
+            android:name=".activity.ComposeActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".activity.ListSmsActivity" />
+        <activity
+            android:name=".activity.ListSmsActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".activity.LockActivity">
+        <activity
+            android:name=".activity.LockActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

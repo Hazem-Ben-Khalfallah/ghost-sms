@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="sms_list_layout_weight">8</integer>
+    <integer name="compose_button_weight">1</integer>
+</resources>
