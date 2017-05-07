@@ -256,8 +256,8 @@ public class ListSmsActivity extends ListActivity implements
     @Override
     public void onSwipe(int[] positionList, SwipeDirection[] directionList) {
         for (int i = 0; i < positionList.length; i++) {
-            SwipeDirection direction = directionList[i];
-            int position = positionList[i];
+            final SwipeDirection direction = directionList[i];
+            final int position = positionList[i];
 
             switch (direction) {
                 case DIRECTION_FAR_LEFT:
@@ -266,7 +266,16 @@ public class ListSmsActivity extends ListActivity implements
                     break;
                 case DIRECTION_FAR_RIGHT:
                 case DIRECTION_NORMAL_RIGHT:
-                    removeSms(position);
+                    ViewUtils.openDialog(this, R.string.sms_remove_title, R.string.sms_remove_description, new ViewUtils.OnActionListener() {
+                        @Override
+                        public void onPositiveClick() {
+                            removeSms(position);
+                        }
+
+                        @Override
+                        public void onNegativeClick() {
+                        }
+                    });
                     break;
             }
 
@@ -274,19 +283,32 @@ public class ListSmsActivity extends ListActivity implements
         }
     }
 
+    private void markAsRead(int position) {
+        if (SmsUtils.isDefaultSmsApp(this)) {
+            final SmsDto sms = (SmsDto) mAdapter.getItem(position);
+            final boolean status = SmsUtils.markSmsAsRead(this, sms.getId());
+            if (status) {
+                ViewUtils.showToast(this, "Sms marked as read");
+            } else {
+                ViewUtils.showToast(this, "Sms could not be marked as read");
+            }
+        } else {
+            ViewUtils.showToast(this, "Ghost SMS is not default sms app");
+        }
+    }
+
     private void removeSms(int position) {
-        final SmsDto sms = (SmsDto) mAdapter.getItem(position);
-        ViewUtils.openDialog(this, R.string.sms_remove_title, R.string.sms_remove_description, new ViewUtils.OnActionListener() {
-            @Override
-            public void onPositiveClick() {
-                //todo
+        if (SmsUtils.isDefaultSmsApp(this)) {
+            final SmsDto sms = (SmsDto) mAdapter.getItem(position);
+            final boolean status = SmsUtils.removeSms(this, sms.getId());
+            if (status) {
+                ViewUtils.showToast(this, "Sms has been removed");
+            } else {
+                ViewUtils.showToast(this, "Sms could not be removed");
             }
-
-            @Override
-            public void onNegativeClick() {
-
-            }
-        });
+        } else {
+            ViewUtils.showToast(this, "Ghost SMS is not default sms app");
+        }
     }
 
     private void openSmsDetails(int position) {

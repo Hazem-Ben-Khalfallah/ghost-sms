@@ -2,6 +2,8 @@ package com.blacknebula.ghostsms.activity;
 
 import android.database.Cursor;
 
+import com.blacknebula.ghostsms.utils.SmsUtils;
+
 /**
  * @author hazem
  */
@@ -9,11 +11,11 @@ import android.database.Cursor;
 public class SmsCursorTransformer {
     public static SmsDto transform(Cursor cursor) {
         final SmsDto sms = new SmsDto();
-        sms.setId(cursor.getString(cursor.getColumnIndex("_id")));
-        sms.setPhone(cursor.getString(cursor.getColumnIndex("address")));
-        sms.setMessage(cursor.getString(cursor.getColumnIndex("body")));
-        sms.setDate(cursor.getLong(cursor.getColumnIndex("date")));
-        sms.setRead(cursor.getInt(cursor.getColumnIndex("read")) > 0);
+        sms.setId(cursor.getString(cursor.getColumnIndex(SmsUtils.SmsFields.id)));
+        sms.setPhone(cursor.getString(cursor.getColumnIndex(SmsUtils.SmsFields.address)));
+        sms.setMessage(cursor.getString(cursor.getColumnIndex(SmsUtils.SmsFields.body)));
+        sms.setDate(cursor.getLong(cursor.getColumnIndex(SmsUtils.SmsFields.date)));
+        sms.setRead(cursor.getInt(cursor.getColumnIndex(SmsUtils.SmsFields.read)) > 0);
         return sms;
     }
 }

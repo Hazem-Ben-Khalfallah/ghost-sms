@@ -28,6 +28,6 @@
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
         android:drawableEnd="@mipmap/ic_delete"
-        android:text="@string/remove"
+        android:text="@string/remove_sms"
         android:textColor="@color/white" />
 </RelativeLayout>

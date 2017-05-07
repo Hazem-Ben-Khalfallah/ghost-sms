@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="@integer/compose_button_weight"
-        android:background="@android:color/holo_orange_light"
+        android:background="@color/colorPrimary"
         android:text="@string/compose"
         android:textColor="@color/white" />
 

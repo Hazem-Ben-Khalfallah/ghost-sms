@@ -11,4 +11,7 @@
     <!-- default colors -->
     <color name="white">#FFF</color>
     <color name="black">#000</color>
+    <!-- list sms colors -->
+    <color name="green_light">#ff99cc00</color>
+    <color name="unread_sms">#29000000</color>
 </resources>

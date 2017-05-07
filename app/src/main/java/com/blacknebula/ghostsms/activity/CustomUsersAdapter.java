@@ -20,20 +20,24 @@ public class CustomUsersAdapter extends ArrayAdapter<SmsDto> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        SmsDto sms = getItem(position);
+        final SmsDto sms = getItem(position);
+        if (sms == null) {
+            return convertView;
+        }
+
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.row_bg, parent, false);
         }
         // Lookup view for data population
-        TextView phone = (TextView) convertView.findViewById(R.id.phone);
-        TextView message = (TextView) convertView.findViewById(R.id.message);
-        TextView smsDate = (TextView) convertView.findViewById(R.id.smsDate);
+        final TextView phone = (TextView) convertView.findViewById(R.id.phone);
+        final TextView message = (TextView) convertView.findViewById(R.id.message);
+        final TextView smsDate = (TextView) convertView.findViewById(R.id.smsDate);
         // Populate the data into the template view using the data object
         phone.setText(sms.getPhone());
         message.setText(sms.getMessage());
 
-        long now = System.currentTimeMillis();
+        final long now = System.currentTimeMillis();
         smsDate.setText(DateUtils.getRelativeTimeSpanString(sms.getDate(), now, DateUtils.DAY_IN_MILLIS));
 
         // Return the completed view to render on screen
