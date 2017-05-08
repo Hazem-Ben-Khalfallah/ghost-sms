@@ -4,13 +4,17 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 
 import com.blacknebula.ghostsms.R;
 
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -46,6 +50,14 @@ public class ViewUtils {
             view.setAlpha(FOCUS);
         } else {
             view.setAlpha(NORMAL);
+        }
+    }
+
+    public static Bitmap toBitmap(Context context, String uri, Bitmap defaultBitmap) {
+        try {
+            return MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(uri));
+        } catch (IOException e) {
+            return defaultBitmap;
         }
     }
 

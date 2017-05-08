@@ -14,6 +14,7 @@ import com.blacknebula.ghostsms.R;
 import com.blacknebula.ghostsms.encryption.SmsEncryptionWrapper;
 import com.blacknebula.ghostsms.utils.SmsUtils;
 import com.blacknebula.ghostsms.utils.StringUtils;
+import com.blacknebula.ghostsms.utils.ViewUtils;
 import com.github.bassaer.chatmessageview.models.Message;
 import com.github.bassaer.chatmessageview.models.User;
 import com.github.bassaer.chatmessageview.views.ChatView;
@@ -55,6 +56,9 @@ public class OpenSmsActivity extends AppCompatActivity {
 
         int otherId = 1;
         Bitmap otherIcon = BitmapFactory.decodeResource(getResources(), R.drawable.circle);
+        if (StringUtils.isNotEmpty(smsDto.getPhotoUri())) {
+            otherIcon = ViewUtils.toBitmap(this, smsDto.getPhotoUri(), otherIcon);
+        }
         String otherName = smsDto.getDisplayName();
         final User otherUser = new User(otherId, otherName, otherIcon);
 
@@ -81,7 +85,7 @@ public class OpenSmsActivity extends AppCompatActivity {
                         .setRightMessage(false)
                         .setMessageText(messageText)
                         .setCreatedAt(c)
-                        .hideIcon(true)
+                        .hideIcon(false)
                         .build();
                 mChatView.receive(message);
             }

@@ -18,20 +18,24 @@ public class SmsDto implements Comparable<SmsDto> {
     boolean encrypted;
     String threadId;
     int type;
-    private String displayName;
+    String displayName;
+    String photoUri;
 
     public SmsDto() {
     }
 
-
     @ParcelConstructor
-    public SmsDto(String id, String phone, String message, Long date, boolean read, boolean encrypted) {
+    public SmsDto(String id, String phone, String message, Long date, boolean read, boolean encrypted, String threadId, int type, String displayName, String photoUri) {
         this.id = id;
         this.phone = phone;
         this.message = message;
         this.date = date;
         this.read = read;
         this.encrypted = encrypted;
+        this.threadId = threadId;
+        this.type = type;
+        this.displayName = displayName;
+        this.photoUri = photoUri;
     }
 
     public String getPhone() {
@@ -108,11 +112,19 @@ public class SmsDto implements Comparable<SmsDto> {
         return -1;
     }
 
+    public String getDisplayName() {
+        return displayName;
+    }
+
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
 
-    public String getDisplayName() {
-        return displayName;
+    public String getPhotoUri() {
+        return photoUri;
+    }
+
+    public void setPhotoUri(String photoUri) {
+        this.photoUri = photoUri;
     }
 }

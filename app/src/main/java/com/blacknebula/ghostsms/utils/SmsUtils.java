@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.ContactsContract;
 import android.provider.Telephony;
 
 import com.blacknebula.ghostsms.GhostSmsApplication;
+import com.blacknebula.ghostsms.activity.ContactDto;
 import com.blacknebula.ghostsms.activity.SmsCursorTransformer;
 import com.blacknebula.ghostsms.activity.SmsDto;
 import com.google.common.base.Optional;
@@ -65,7 +65,9 @@ public class SmsUtils {
             do {
                 final SmsDto sms = SmsCursorTransformer.transform(cursor);
                 if (!threadsSet.contains(sms.getThreadId())) {
-                    sms.setDisplayName(getContactName(context, sms.getPhone()));
+                    final ContactDto contact = ContactUtils.getContactName(context, sms.getPhone());
+                    sms.setDisplayName(contact.getDisplayName());
+                    sms.setPhotoUri(contact.getPhotoUri());
                     smsList.add(sms);
                     threadsSet.add(sms.getThreadId());
                 }
@@ -90,25 +92,6 @@ public class SmsUtils {
         }
 
         return smsList;
-    }
-
-    public static String getContactName(Context context, String number) {
-        if (!PermissionUtils.hasReadContactsPermission(context)) {
-            return number;
-        }
-        String ret = null;
-        String selection = ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER + " =?";
-        String[] args = {number};
-        String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME};
-        Cursor c = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                projection, selection, args, null);
-        if (c.moveToFirst()) {
-            ret = c.getString(0);
-        }
-        c.close();
-        if (ret == null)
-            ret = number;
-        return ret;
     }
 
     public static class SmsFields {
