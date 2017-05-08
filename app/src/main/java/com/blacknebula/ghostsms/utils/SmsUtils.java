@@ -14,7 +14,9 @@ import com.google.common.base.Optional;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author hazem
@@ -54,11 +56,17 @@ public class SmsUtils {
     public static List<SmsDto> listSms(Context context) {
         final List<SmsDto> smsList = new ArrayList<>();
         final Cursor cursor = context.getContentResolver()
-                .query(Uri.parse("content://sms/inbox"), null, null, null, "date desc");
+                .query(Uri.parse("content://sms"), null, null, null, "date desc");
+
+        final Set<String> threadsSet = new HashSet<>();
 
         if (cursor.moveToFirst()) { // must check the result to prevent exception
             do {
-                smsList.add(SmsCursorTransformer.transform(cursor));
+                final SmsDto sms = SmsCursorTransformer.transform(cursor);
+                if (!threadsSet.contains(sms.getThreadId())) {
+                    smsList.add(sms);
+                    threadsSet.add(sms.getThreadId());
+                }
             } while (cursor.moveToNext());
         }
 
