@@ -12,14 +12,17 @@ import android.view.View;
 
 import com.blacknebula.ghostsms.R;
 import com.blacknebula.ghostsms.encryption.SmsEncryptionWrapper;
+import com.blacknebula.ghostsms.utils.SmsUtils;
 import com.blacknebula.ghostsms.utils.StringUtils;
 import com.github.bassaer.chatmessageview.models.Message;
 import com.github.bassaer.chatmessageview.models.User;
 import com.github.bassaer.chatmessageview.views.ChatView;
+import com.google.common.base.Optional;
 
 import org.parceler.Parcels;
 
 import java.util.Calendar;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -40,6 +43,7 @@ public class OpenSmsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         final Parcelable parcelable = intent.getParcelableExtra(SMS_DETAILS);
         final SmsDto smsDto = Parcels.unwrap(parcelable);
+        final List<SmsDto> conversations = SmsUtils.getConversation(this, smsDto.getThreadId(), Optional.<Long>absent());
 
         //User id
         int myId = 0;
@@ -57,17 +61,32 @@ public class OpenSmsActivity extends AppCompatActivity {
         configureChatView();
 
 
-        final String messageText = readMessage(smsDto);
-        final Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(smsDto.getDate());
-        final Message message = new Message.Builder()
-                .setUser(you)
-                .setRightMessage(false)
-                .setMessageText(messageText)
-                .setCreatedAt(c)
-                .hideIcon(true)
-                .build();
-        mChatView.send(message);
+        for (SmsDto sms : conversations) {
+            final String messageText = readMessage(sms);
+            final Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(sms.getDate());
+            final Message message;
+            if (sms.getType() == SmsUtils.SmsTypes.TYPE_SENT) {
+                message = new Message.Builder()
+                        .setUser(me)
+                        .setRightMessage(true)
+                        .setMessageText(messageText)
+                        .setCreatedAt(c)
+                        .hideIcon(true)
+                        .build();
+                mChatView.send(message);
+            } else {
+                message = new Message.Builder()
+                        .setUser(you)
+                        .setRightMessage(false)
+                        .setMessageText(messageText)
+                        .setCreatedAt(c)
+                        .hideIcon(true)
+                        .build();
+                mChatView.receive(message);
+            }
+
+        }
 
 
         //Click Send Button
@@ -95,9 +114,9 @@ public class OpenSmsActivity extends AppCompatActivity {
         String message;
         if (smsDto.isEncrypted()) {
             try {
-                message = SmsEncryptionWrapper.decrypt(smsDto.getMessage());
+                message = StringUtils.getEmojiByUnicode(StringUtils.locked_emoji) + " " + SmsEncryptionWrapper.decrypt(smsDto.getMessage());
             } catch (Exception e) {
-                message = StringUtils.getEmojiByUnicode(0x26A0) + " oops, something went wrong!"; // warn emoji
+                message = StringUtils.getEmojiByUnicode(StringUtils.warn_emoji) + " oops, something went wrong!";
             }
         } else {
             message = smsDto.getMessage();

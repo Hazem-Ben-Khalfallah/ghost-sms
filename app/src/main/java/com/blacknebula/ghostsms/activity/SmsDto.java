@@ -1,5 +1,7 @@
 package com.blacknebula.ghostsms.activity;
 
+import android.support.annotation.NonNull;
+
 import org.parceler.Parcel;
 import org.parceler.ParcelConstructor;
 
@@ -7,13 +9,15 @@ import org.parceler.ParcelConstructor;
  * @author hazem
  */
 @Parcel
-public class SmsDto {
-    private String id;
-    private String phone;
-    private String message;
-    private Long date;
-    private boolean read;
-    private boolean encrypted;
+public class SmsDto implements Comparable<SmsDto> {
+    String id;
+    String phone;
+    String message;
+    Long date;
+    boolean read;
+    boolean encrypted;
+    String threadId;
+    int type;
 
     public SmsDto() {
     }
@@ -75,5 +79,31 @@ public class SmsDto {
 
     public void setEncrypted(boolean encrypted) {
         this.encrypted = encrypted;
+    }
+
+    public String getThreadId() {
+        return threadId;
+    }
+
+    public void setThreadId(String threadId) {
+        this.threadId = threadId;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    @Override
+    public int compareTo(@NonNull SmsDto otherSms) {
+        if (this.getDate() > otherSms.getDate()) {
+            return 1;
+        } else if (this.getDate().equals(otherSms.getDate())) {
+            return 0;
+        }
+        return -1;
     }
 }

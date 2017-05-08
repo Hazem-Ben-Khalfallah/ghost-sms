@@ -10,6 +10,10 @@ import java.nio.charset.Charset;
 
 public class StringUtils{
 
+    public static int warn_emoji = 0x26A0;
+    public static int bookmark_emoji = 0x1F516;
+    public static int locked_emoji = 0x1F510;
+
     private static final Charset CHARSET = Charset.forName("ISO-8859-1");
 
     public static byte[] fromStringToBytes(String message) {

@@ -25,7 +25,6 @@ import com.wdullaer.swipeactionadapter.SwipeDirection;
 
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -70,7 +69,7 @@ public class ListSmsActivity extends ListActivity implements
         if (!checkReadSmsPermission()) {
             return;
         }
-        final List<SmsDto> content = listSms();
+        final List<SmsDto> content = SmsUtils.listSms(this);
         final CustomUsersAdapter stringAdapter = new CustomUsersAdapter(this, content);
         mAdapter = new SwipeActionAdapter(stringAdapter);
         mAdapter.setSwipeActionListener(this)
@@ -200,40 +199,6 @@ public class ListSmsActivity extends ListActivity implements
 
     private boolean checkReadSmsPermission() {
         return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private List<SmsDto> listSms() {
-        readSms();
-
-        final List<SmsDto> smsList = new ArrayList<>();
-        final Cursor cursor = getContentResolver()
-                .query(Uri.parse("content://sms/inbox"), null, null, null, null);
-
-        if (cursor.moveToFirst()) { // must check the result to prevent exception
-            do {
-                smsList.add(SmsCursorTransformer.transform(cursor));
-            } while (cursor.moveToNext());
-        }
-
-        return smsList;
-    }
-
-    private void readSms() {
-        final Cursor cursor = getContentResolver()
-                .query(Uri.parse("content://sms/inbox"), null, null, null, null);
-
-        if (cursor.moveToFirst()) { // must check the result to prevent exception
-            do {
-                String msgData = "";
-                for (int idx = 0; idx < cursor.getColumnCount(); idx++) {
-                    msgData += " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx) + "\n";
-                }
-                Logger.info(Logger.Type.GHOST_SMS, "*** %s", msgData);
-                // use msgData
-            } while (cursor.moveToNext());
-        } else {
-            // empty box, no SMS
-        }
     }
 
     @Override

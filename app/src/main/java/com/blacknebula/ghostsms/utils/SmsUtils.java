@@ -3,10 +3,18 @@ package com.blacknebula.ghostsms.utils;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.provider.Telephony;
 
 import com.blacknebula.ghostsms.GhostSmsApplication;
+import com.blacknebula.ghostsms.activity.SmsCursorTransformer;
+import com.blacknebula.ghostsms.activity.SmsDto;
+import com.google.common.base.Optional;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 /**
  * @author hazem
@@ -43,11 +51,70 @@ public class SmsUtils {
         return context.getPackageName().equals(Telephony.Sms.getDefaultSmsPackage(context));
     }
 
+    public static List<SmsDto> listSms(Context context) {
+        final List<SmsDto> smsList = new ArrayList<>();
+        final Cursor cursor = context.getContentResolver()
+                .query(Uri.parse("content://sms/inbox"), null, null, null, "date desc");
+
+        if (cursor.moveToFirst()) { // must check the result to prevent exception
+            do {
+                smsList.add(SmsCursorTransformer.transform(cursor));
+            } while (cursor.moveToNext());
+        }
+
+        return smsList;
+    }
+
+    public static List<SmsDto> getConversation(Context context, String threadId, Optional<Long> endTimeInMillis) {
+        final List<SmsDto> smsList = new ArrayList<>();
+        final String selection = String.format("%s=? AND %s<=? ", SmsFields.threadId, SmsFields.date);
+        final String[] args = {threadId, Long.toString(endTimeInMillis.or(Calendar.getInstance().getTimeInMillis()))};
+        final Cursor cursor = context.getContentResolver()
+                .query(Uri.parse("content://sms"), null, selection, args, "date ");
+
+        if (cursor.moveToFirst()) { // must check the result to prevent exception
+            do {
+                final SmsDto smsDto = SmsCursorTransformer.transform(cursor);
+                smsList.add(smsDto);
+            } while (cursor.moveToNext());
+        }
+
+        return smsList;
+    }
+
+    /**
+     * todo should be deleted
+     */
+    /*private static void readSms(Context context) {
+        final Cursor cursor = context.getContentResolver()
+                .query(Uri.parse("content://sms/inbox"), null, null, null, "date desc");
+
+        if (cursor.moveToFirst()) { // must check the result to prevent exception
+            do {
+                String msgData = "";
+                for (int idx = 0; idx < cursor.getColumnCount(); idx++) {
+                    msgData += " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx) + "\n";
+                }
+                Logger.info(Logger.Type.GHOST_SMS, "*** %s", msgData);
+                // use msgData
+            } while (cursor.moveToNext());
+        } else {
+            // empty box, no SMS
+        }
+    }*/
+
     public static class SmsFields {
         public static String id = "_id";
+        public static String threadId = "thread_id";
+        public static String type = "type";
         public static String address = "address";
         public static String body = "body";
         public static String date = "date";
         public static String read = "read";
+    }
+
+    public static class SmsTypes {
+        public static int TYPE_INBOX = 1;
+        public static int TYPE_SENT = 2;
     }
 }
