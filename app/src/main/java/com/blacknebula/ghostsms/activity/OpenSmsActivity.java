@@ -53,10 +53,10 @@ public class OpenSmsActivity extends AppCompatActivity {
         String myName = "Me";
         final User me = new User(myId, myName, myIcon);
 
-        int yourId = 1;
-        Bitmap yourIcon = BitmapFactory.decodeResource(getResources(), R.drawable.circle);
-        String yourName = smsDto.getPhone();
-        final User you = new User(yourId, yourName, yourIcon);
+        int otherId = 1;
+        Bitmap otherIcon = BitmapFactory.decodeResource(getResources(), R.drawable.circle);
+        String otherName = smsDto.getDisplayName();
+        final User otherUser = new User(otherId, otherName, otherIcon);
 
         configureChatView();
 
@@ -77,7 +77,7 @@ public class OpenSmsActivity extends AppCompatActivity {
                 mChatView.send(message);
             } else {
                 message = new Message.Builder()
-                        .setUser(you)
+                        .setUser(otherUser)
                         .setRightMessage(false)
                         .setMessageText(messageText)
                         .setCreatedAt(c)

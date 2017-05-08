@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.provider.Telephony;
 
 import com.blacknebula.ghostsms.GhostSmsApplication;
@@ -64,6 +65,7 @@ public class SmsUtils {
             do {
                 final SmsDto sms = SmsCursorTransformer.transform(cursor);
                 if (!threadsSet.contains(sms.getThreadId())) {
+                    sms.setDisplayName(getContactName(context, sms.getPhone()));
                     smsList.add(sms);
                     threadsSet.add(sms.getThreadId());
                 }
@@ -90,26 +92,24 @@ public class SmsUtils {
         return smsList;
     }
 
-    /**
-     * todo should be deleted
-     */
-    /*private static void readSms(Context context) {
-        final Cursor cursor = context.getContentResolver()
-                .query(Uri.parse("content://sms/inbox"), null, null, null, "date desc");
-
-        if (cursor.moveToFirst()) { // must check the result to prevent exception
-            do {
-                String msgData = "";
-                for (int idx = 0; idx < cursor.getColumnCount(); idx++) {
-                    msgData += " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx) + "\n";
-                }
-                Logger.info(Logger.Type.GHOST_SMS, "*** %s", msgData);
-                // use msgData
-            } while (cursor.moveToNext());
-        } else {
-            // empty box, no SMS
+    public static String getContactName(Context context, String number) {
+        if (!PermissionUtils.hasReadContactsPermission(context)) {
+            return number;
         }
-    }*/
+        String ret = null;
+        String selection = ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER + " =?";
+        String[] args = {number};
+        String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME};
+        Cursor c = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                projection, selection, args, null);
+        if (c.moveToFirst()) {
+            ret = c.getString(0);
+        }
+        c.close();
+        if (ret == null)
+            ret = number;
+        return ret;
+    }
 
     public static class SmsFields {
         public static String id = "_id";

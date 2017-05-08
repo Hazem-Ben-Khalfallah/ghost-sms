@@ -18,6 +18,7 @@ public class SmsDto implements Comparable<SmsDto> {
     boolean encrypted;
     String threadId;
     int type;
+    private String displayName;
 
     public SmsDto() {
     }
@@ -105,5 +106,13 @@ public class SmsDto implements Comparable<SmsDto> {
             return 0;
         }
         return -1;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 }

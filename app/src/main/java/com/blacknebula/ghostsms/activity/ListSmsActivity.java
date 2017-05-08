@@ -4,8 +4,6 @@ import android.Manifest;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -18,6 +16,7 @@ import android.widget.ListView;
 import com.blacknebula.ghostsms.GhostSmsApplication;
 import com.blacknebula.ghostsms.R;
 import com.blacknebula.ghostsms.utils.Logger;
+import com.blacknebula.ghostsms.utils.PermissionUtils;
 import com.blacknebula.ghostsms.utils.SmsUtils;
 import com.blacknebula.ghostsms.utils.ViewUtils;
 import com.wdullaer.swipeactionadapter.SwipeActionAdapter;
@@ -35,6 +34,7 @@ public class ListSmsActivity extends ListActivity implements
         SwipeActionAdapter.SwipeActionListener {
 
     private static final int READ_SMS_REQUEST_CODE = 1;
+    private static final int READ_CONTACTS_REQUEST_CODE = 2;
     private static final int RECEIVE_SMS_REQUEST_CODE = 3;
 
     protected SwipeActionAdapter mAdapter;
@@ -50,6 +50,7 @@ public class ListSmsActivity extends ListActivity implements
 
         if (SmsUtils.checkSmsSupport()) {
             requestReadSmsPermission();
+            requestReadContactsPermission();
             requestReceiveSmsPermission();
         } else {
             Logger.warn(Logger.Type.GHOST_SMS, "SMS not support for this device!");
@@ -66,7 +67,7 @@ public class ListSmsActivity extends ListActivity implements
     }
 
     private void displaySmsList() {
-        if (!checkReadSmsPermission()) {
+        if (!PermissionUtils.hasReadSmsPermission(this)) {
             return;
         }
         final List<SmsDto> content = SmsUtils.listSms(this);
@@ -91,12 +92,23 @@ public class ListSmsActivity extends ListActivity implements
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! do what you have to do
                     displaySmsList();
-
                 } else {
-
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                     Logger.warn(Logger.Type.GHOST_SMS, "%s: Permission Denied!", "Read sms");
+                    finish();
+                }
+                return;
+            }
+            case READ_CONTACTS_REQUEST_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! do what you have to do
+                    displaySmsList();
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Logger.warn(Logger.Type.GHOST_SMS, "%s: Permission Denied!", "Read contacts");
                     finish();
                 }
                 return;
@@ -121,12 +133,47 @@ public class ListSmsActivity extends ListActivity implements
         }
     }
 
+    private void requestReadContactsPermission() {
+        //check API version, do nothing if API version < 23!
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+
+            if (!PermissionUtils.hasReadContactsPermission(this)) {
+
+                // Should we show an explanation?
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
+
+                    // Show an explanation to the user *asynchronously* -- don't block
+                    // this thread waiting for the user's response! After the user
+                    // sees the explanation, try again to request the permission.
+                    ViewUtils.openDialog(this, R.string.read_contacts_request_permission_title, R.string.read_contacts_request_permission_message, new ViewUtils.OnActionListener() {
+                        @Override
+                        public void onPositiveClick() {
+                            ActivityCompat.requestPermissions(ListSmsActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, READ_CONTACTS_REQUEST_CODE);
+                        }
+
+                        @Override
+                        public void onNegativeClick() {
+                            // permission denied, boo! but don't block app
+                            Logger.warn(Logger.Type.GHOST_SMS, "%s: Permission Denied!", "Read contacts");
+                        }
+                    });
+
+                } else {
+                    // No explanation needed, we can request the permission.
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, READ_CONTACTS_REQUEST_CODE);
+                }
+            } else {
+                //do nothing
+            }
+        }
+    }
+
 
     private void requestReadSmsPermission() {
         //check API version, do nothing if API version < 23!
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
 
-            if (!checkReadSmsPermission()) {
+            if (!PermissionUtils.hasReadSmsPermission(this)) {
 
                 // Should we show an explanation?
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_SMS)) {
@@ -195,10 +242,6 @@ public class ListSmsActivity extends ListActivity implements
                 // Permission already granted
             }
         }
-    }
-
-    private boolean checkReadSmsPermission() {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override

@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +13,7 @@ import android.widget.EditText;
 import com.blacknebula.ghostsms.R;
 import com.blacknebula.ghostsms.encryption.SmsEncryptionWrapper;
 import com.blacknebula.ghostsms.utils.Logger;
+import com.blacknebula.ghostsms.utils.PermissionUtils;
 import com.blacknebula.ghostsms.utils.SmsUtils;
 import com.blacknebula.ghostsms.utils.ViewUtils;
 
@@ -112,7 +112,7 @@ public class ComposeActivity extends AppCompatActivity {
         //check API version, do nothing if API version < 23!
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
 
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            if (!PermissionUtils.hasSendSmsPermission(this)) {
 
                 // Should we show an explanation?
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.SEND_SMS)) {
