@@ -26,8 +26,8 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class ListSmsActivity extends ListActivity implements
@@ -38,14 +38,14 @@ public class ListSmsActivity extends ListActivity implements
     private static final int RECEIVE_SMS_REQUEST_CODE = 3;
 
     protected SwipeActionAdapter mAdapter;
-    @InjectView(R.id.compose)
+    @BindView(R.id.compose)
     Button composeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listsms);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
 
         if (SmsUtils.checkSmsSupport()) {

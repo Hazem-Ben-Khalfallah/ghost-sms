@@ -23,8 +23,8 @@ import com.blacknebula.ghostsms.utils.ThreadUtils;
 
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 
 import static com.andrognito.patternlockview.PatternLockView.PatternViewMode.CORRECT;
@@ -35,11 +35,11 @@ public class LockActivity extends AppCompatActivity {
     private static final int MAX_ATTEMPTS = 3;
     private static String LOCK_PATTERN = "lock_pattern";
 
-    @InjectView(R.id.pattern_lock_view)
+    @BindView(R.id.pattern_lock_view)
     PatternLockView patternLockView;
-    @InjectView(R.id.pattern_lock_layout)
+    @BindView(R.id.pattern_lock_layout)
     RelativeLayout patternLockLayout;
-    @InjectView(R.id.title)
+    @BindView(R.id.title)
     TextView title;
 
     private String tmpLockPattern;
@@ -148,7 +148,7 @@ public class LockActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lock);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         patternLockView.addPatternLockListener(mPatternLockViewListener);
         final String lockPattern = PreferenceUtils.getString("lock_pattern", "");

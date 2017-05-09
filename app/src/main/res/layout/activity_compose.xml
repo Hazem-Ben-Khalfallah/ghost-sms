@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -7,86 +8,128 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:background="@color/blueGray50"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Message" />
-
-        <EditText
-            android:id="@+id/message"
+        <com.pchmn.materialchips.ChipsInput
+            android:id="@+id/destination"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/encrypt"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Encrypt" />
+            android:background="@color/white"
+            android:paddingEnd="5dp"
+            android:paddingStart="5dp"
+            app:chip_deletable="true"
+            app:hint="Enter recipients"
+            app:maxRows="1" />
 
-        <View
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:background="@android:color/darker_gray"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="encrypted Message (Base64)" />
+            android:paddingTop="5dp">
 
-        <EditText
-            android:id="@+id/encryptedMessageBase64"
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp">
+
+                <com.suke.widget.SwitchButton
+                    android:id="@+id/secure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:sb_checked="true" />
+
+                <TextView
+                    android:id="@+id/secureLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@id/secure"
+                    android:text="Encryption on" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/decrypt"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Decrypt" />
+            android:orientation="vertical"
+            android:paddingTop="20dp">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:background="@android:color/darker_gray"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
+            <com.wrapp.floatlabelededittext.FloatLabeledEditText
+                android:id="@+id/rsaKeyWrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                app:fletTextAppearance="@style/HeaderTextStyle">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Encrypted Message" />
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Public RSA key"
+                    android:maxLines="3" />
+            </com.wrapp.floatlabelededittext.FloatLabeledEditText>
 
-        <EditText
-            android:id="@+id/encryptedMessage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Encrypted secret key" />
-
-        <EditText
-            android:id="@+id/encryptedSecretKey"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Decrypted message" />
-
-        <EditText
-            android:id="@+id/decryptedMessage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
+                <CheckBox
+                    android:id="@+id/rememberKey"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:checked="true"
+                    android:paddingEnd="5dp"
+                    android:paddingStart="5dp"
+                    android:text="Remember this key" />
+            </RelativeLayout>
+        </LinearLayout>
 
 
     </LinearLayout>
-</ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/messageLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:paddingEnd="5dp"
+            app:hintEnabled="false"
+            android:paddingStart="5dp">
+
+            <EditText
+                android:id="@+id/message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter message"
+                android:maxLines="1" />
+        </android.support.design.widget.TextInputLayout>
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/send"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:layout_width="@dimen/icon_normal"
+                android:layout_height="match_parent"
+                android:contentDescription="Send"
+                android:src="@drawable/ic_action_send" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

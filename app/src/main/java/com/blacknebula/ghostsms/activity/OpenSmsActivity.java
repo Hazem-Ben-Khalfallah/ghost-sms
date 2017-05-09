@@ -25,21 +25,21 @@ import org.parceler.Parcels;
 import java.util.Calendar;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class OpenSmsActivity extends AppCompatActivity {
 
     public static final String SMS_DETAILS = "sms_details";
 
-    @InjectView(R.id.chat_view)
+    @BindView(R.id.chat_view)
     ChatView mChatView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_opensms);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         Intent intent = getIntent();
         final Parcelable parcelable = intent.getParcelableExtra(SMS_DETAILS);

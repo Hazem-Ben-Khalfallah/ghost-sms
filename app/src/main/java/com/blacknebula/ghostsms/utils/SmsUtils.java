@@ -66,8 +66,8 @@ public class SmsUtils {
                 final SmsDto sms = SmsCursorTransformer.transform(cursor);
                 if (!threadsSet.contains(sms.getThreadId())) {
                     final ContactDto contact = ContactUtils.getContactName(context, sms.getPhone());
-                    sms.setDisplayName(contact.getDisplayName());
-                    sms.setPhotoUri(contact.getPhotoUri());
+                    sms.setDisplayName(contact.getLabel());
+                    sms.setPhotoUri(contact.getAvatarUriString());
                     smsList.add(sms);
                     threadsSet.add(sms.getThreadId());
                 }
@@ -92,6 +92,16 @@ public class SmsUtils {
         }
 
         return smsList;
+    }
+
+    /**
+     * todo implement this method
+     *
+     * @param context
+     * @param message
+     */
+    public static void sendSms(Context context, String message) {
+        ViewUtils.showToast(context, message);
     }
 
     public static class SmsFields {

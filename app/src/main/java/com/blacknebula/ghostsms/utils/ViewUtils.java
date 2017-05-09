@@ -61,6 +61,14 @@ public class ViewUtils {
         }
     }
 
+    public static Bitmap toBitmap(Context context, Uri uri, Bitmap defaultBitmap) {
+        try {
+            return MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
+        } catch (IOException e) {
+            return defaultBitmap;
+        }
+    }
+
     public static void showToast(final Context context, final String message) {
         showToast(context, message, false);
     }

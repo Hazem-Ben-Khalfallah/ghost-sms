@@ -38,7 +38,7 @@ public class StringUtils{
         return Base64.decodeBase64(fromStringToBytes(value));
     }
 
-    public static boolean isEmpty(String value) {
+    public static boolean isEmpty(CharSequence value) {
         return value == null || value.length() == 0;
     }
 

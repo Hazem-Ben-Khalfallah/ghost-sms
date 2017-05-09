@@ -34,7 +34,6 @@ public class SmsEncryptionWrapper {
     public static boolean isEncrypted(String receivedMessage) {
         try {
             if (StringUtils.isEmpty(receivedMessage, true) || !StringUtils.isBase64Encoded(receivedMessage)) {
-                Logger.error(Logger.Type.GHOST_SMS, "value not base64 encoded");
                 return false;
             }
 
