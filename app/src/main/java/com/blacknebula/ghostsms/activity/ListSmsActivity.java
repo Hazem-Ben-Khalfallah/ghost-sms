@@ -1,7 +1,6 @@
 package com.blacknebula.ghostsms.activity;
 
 import android.Manifest;
-import android.app.ListActivity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -9,9 +8,16 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.blacknebula.ghostsms.GhostSmsApplication;
 import com.blacknebula.ghostsms.R;
@@ -30,7 +36,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ListSmsActivity extends ListActivity implements
+public class ListSmsActivity extends AppCompatActivity implements
         SwipeActionAdapter.SwipeActionListener {
 
     private static final int READ_SMS_REQUEST_CODE = 1;
@@ -40,12 +46,21 @@ public class ListSmsActivity extends ListActivity implements
     protected SwipeActionAdapter mAdapter;
     @BindView(R.id.compose)
     Button composeButton;
+    @BindView(R.id.listSms)
+    ListView listSms;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.secureLayout)
+    RelativeLayout secureLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listsms);
         ButterKnife.bind(this);
+
+        setSupportActionBar(toolbar);
+        secureLayout.setVisibility(View.GONE);
 
 
         if (SmsUtils.checkSmsSupport()) {
@@ -75,13 +90,37 @@ public class ListSmsActivity extends ListActivity implements
         mAdapter = new SwipeActionAdapter(stringAdapter);
         mAdapter.setSwipeActionListener(this)
                 .setDimBackgrounds(true)
-                .setListView(getListView());
-        setListAdapter(mAdapter);
+                .setListView(listSms);
+        listSms.setAdapter(mAdapter);
+        listSms.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                openSmsDetails(position);
+            }
+        });
 
         mAdapter.addBackground(SwipeDirection.DIRECTION_FAR_LEFT, R.layout.row_bg_left_far)
                 .addBackground(SwipeDirection.DIRECTION_NORMAL_LEFT, R.layout.row_bg_left_far)
                 .addBackground(SwipeDirection.DIRECTION_FAR_RIGHT, R.layout.row_bg_right_far)
                 .addBackground(SwipeDirection.DIRECTION_NORMAL_RIGHT, R.layout.row_bg_right_far);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.settings:
+                Toast.makeText(this, "Settings", Toast.LENGTH_LONG).show();
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 
     @Override
@@ -242,11 +281,6 @@ public class ListSmsActivity extends ListActivity implements
                 // Permission already granted
             }
         }
-    }
-
-    @Override
-    protected void onListItemClick(ListView listView, View view, int position, long id) {
-        openSmsDetails(position);
     }
 
     @Override

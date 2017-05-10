@@ -13,6 +13,10 @@
         android:background="@color/blueGray50"
         android:orientation="vertical">
 
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar" />
+
         <com.pchmn.materialchips.ChipsInput
             android:id="@+id/destination"
             android:layout_width="match_parent"
@@ -23,34 +27,6 @@
             app:chip_deletable="true"
             app:hint="Enter recipients"
             app:maxRows="1" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="5dp">
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:paddingEnd="5dp"
-                android:paddingStart="5dp">
-
-                <com.suke.widget.SwitchButton
-                    android:id="@+id/secure"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:sb_checked="true" />
-
-                <TextView
-                    android:id="@+id/secureLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toEndOf="@id/secure"
-                    android:text="Encryption on" />
-            </RelativeLayout>
-        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -105,8 +81,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:paddingEnd="5dp"
-            app:hintEnabled="false"
-            android:paddingStart="5dp">
+            android:paddingStart="5dp"
+            app:hintEnabled="false">
 
             <EditText
                 android:id="@+id/message"

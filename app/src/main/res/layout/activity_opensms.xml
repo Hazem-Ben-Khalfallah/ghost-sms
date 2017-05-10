@@ -6,6 +6,10 @@
     android:orientation="vertical"
     tools:context="com.blacknebula.ghostsms.activity.OpenSmsActivity">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
     <com.github.bassaer.chatmessageview.views.ChatView
         android:id="@+id/chat_view"
         android:layout_width="match_parent"

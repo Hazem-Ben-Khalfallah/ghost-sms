@@ -7,11 +7,16 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.blacknebula.ghostsms.R;
 import com.blacknebula.ghostsms.encryption.SmsEncryptionWrapper;
@@ -43,18 +48,19 @@ public class ComposeActivity extends AppCompatActivity {
     ChipsInput destination;
     @BindView(R.id.rsaKeyWrapper)
     FloatLabeledEditText rsaKeyWrapper;
-    @BindView(R.id.secure)
-    SwitchButton secureButton;
     @BindView(R.id.rememberKey)
     CheckBox rememberKey;
-    @BindView(R.id.secureLabel)
-    TextView secureLabel;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose);
         ButterKnife.bind(this);
+
+        setSupportActionBar(toolbar);
+
         if (SmsUtils.checkSmsSupport()) {
             requestSendSmsPermission();
         } else {
@@ -72,6 +78,8 @@ public class ComposeActivity extends AppCompatActivity {
         final List<ContactDto> contacts = ContactUtils.listContacts(ComposeActivity.this);
         destination.setFilterableList(contacts);
 
+        final SwitchButton secureButton = (SwitchButton) toolbar.findViewById(R.id.secure);
+        final TextView secureLabel = (TextView) toolbar.findViewById(R.id.secureLabel);
         secureButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(SwitchButton view, boolean isChecked) {
@@ -87,6 +95,24 @@ public class ComposeActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.settings:
+                Toast.makeText(this, "Settings", Toast.LENGTH_LONG).show();
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 
     @Override
