@@ -69,21 +69,19 @@ public class ViewUtils {
         }
     }
 
-    public static void showToast(final Context context, final String message) {
-        showToast(context, message, false);
+    public static void showToast(final Context context, final String message, String... params) {
+        final String formattedMessage = String.format(message, params);
+        showToast(context, formattedMessage, false);
     }
 
     public static void showToast(final Context context, final String message, final Boolean isOnTop) {
-        ThreadUtils.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
-                if (isOnTop)
-                    toast.setGravity(Gravity.TOP | Gravity.END, 0, 0);
-                else
-                    toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-                toast.show();
-            }
+        ThreadUtils.runOnUiThread(() -> {
+            Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+            if (isOnTop)
+                toast.setGravity(Gravity.TOP | Gravity.END, 0, 0);
+            else
+                toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+            toast.show();
         });
     }
 
@@ -117,18 +115,10 @@ public class ViewUtils {
                 .setMessage(message)
                 .setIcon(icon)
                 .setCancelable(false)
-                .setPositiveButton(positiveText, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        onActionListener.onPositiveClick();
-                    }
-                });
+                .setPositiveButton(positiveText, (dialog, which) -> onActionListener.onPositiveClick());
 
         if (hasNegativeOption) {
-            builder.setNegativeButton(negativeText, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    onActionListener.onNegativeClick();
-                }
-            });
+            builder.setNegativeButton(negativeText, (dialog, which) -> onActionListener.onNegativeClick());
         }
 
         return builder.show();

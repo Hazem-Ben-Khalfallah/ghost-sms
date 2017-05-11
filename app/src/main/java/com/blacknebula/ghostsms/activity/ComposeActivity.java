@@ -15,7 +15,6 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.blacknebula.ghostsms.R;
-import com.blacknebula.ghostsms.encryption.SmsEncryptionWrapper;
 import com.blacknebula.ghostsms.utils.ContactUtils;
 import com.blacknebula.ghostsms.utils.Logger;
 import com.blacknebula.ghostsms.utils.PermissionUtils;
@@ -123,16 +122,8 @@ public class ComposeActivity extends AbstractCustomToolbarActivity {
 
     @OnClick(R.id.send)
     public void sendSms(View view) {
-        try {
-            if (!PermissionUtils.hasSendSmsPermission(this)) {
-                return;
-            }
-
-            final String encryptedMessage = SmsEncryptionWrapper.encrypt(message.getText().toString());
-            SmsUtils.sendSms(this, encryptedMessage);
-        } catch (Exception e) {
-            Logger.error(Logger.Type.GHOST_SMS, e, "Error while encrypting a message");
-        }
+        final ContactDto destinationContact = (ContactDto) destination.getSelectedChipList().get(0);
+        sendSms(destinationContact.getInfo(), message.getText().toString());
     }
 
     private void requestSendSmsPermission() {

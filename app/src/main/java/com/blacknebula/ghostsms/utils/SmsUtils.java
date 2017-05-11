@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.Telephony;
+import android.telephony.SmsManager;
 
 import com.blacknebula.ghostsms.GhostSmsApplication;
 import com.blacknebula.ghostsms.activity.ContactDto;
@@ -95,13 +96,15 @@ public class SmsUtils {
     }
 
     /**
-     * todo implement this method
+     * todo remove if condition to send sms for real
      *
      * @param context
      * @param message
      */
-    public static void sendSms(Context context, String message) {
-        ViewUtils.showToast(context, message);
+    public static void sendSms(Context context, String phone, String message) {
+        ViewUtils.showToast(context, phone + "\n" + message);
+        if (false)
+            SmsManager.getDefault().sendTextMessage(phone, null, message, null, null);
     }
 
     public static class SmsFields {

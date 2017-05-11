@@ -96,17 +96,23 @@ public class OpenSmsActivity extends AbstractCustomToolbarActivity {
 
         //Click Send Button
         mChatView.setOnClickSendButtonListener(view -> {
+            final String messageText = mChatView.getInputText();
+            if (StringUtils.isEmpty(messageText)) {
+                return;
+            }
             //new message
             Message message = new Message.Builder()
                     .setUser(me)
                     .setRightMessage(true)
-                    .setMessageText(mChatView.getInputText())
+                    .setMessageText(messageText)
                     .hideIcon(true)
                     .build();
             //Set to chat view
             mChatView.send(message);
             //Reset edit text
             mChatView.setInputText("");
+            // send sms
+            sendSms(smsDto.getPhone(), messageText);
         });
 
     }
