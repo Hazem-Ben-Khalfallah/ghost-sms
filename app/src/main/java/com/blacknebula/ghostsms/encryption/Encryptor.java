@@ -2,7 +2,6 @@ package com.blacknebula.ghostsms.encryption;
 
 import com.blacknebula.ghostsms.GhostSmsApplication;
 import com.blacknebula.ghostsms.utils.FileUtils;
-import com.blacknebula.ghostsms.utils.Logger;
 import com.blacknebula.ghostsms.utils.StringUtils;
 
 import java.io.IOException;
@@ -20,10 +19,10 @@ public class Encryptor {
     /**
      * todo should select which public key will be used in accordance with SMS destination
      */
-    public static EncryptionResult encrypt(String message) throws IOException, GeneralSecurityException {
+    public static EncryptionResult encrypt(String message, byte[]  publicKey) throws IOException, GeneralSecurityException {
         //encrypt secret key
         final SecretKeySpec secretKey = KeyGenerator.generateSecretKey();
-        final byte[] encryptedSecretKey = KeyEncryption.Encrypt(secretKey.getEncoded(), getPublic(KeyGenerator.PUBLIC_KEY_PATH, "RSA"), "RSA");
+        final byte[] encryptedSecretKey = KeyEncryption.Encrypt(secretKey.getEncoded(), getDestinationPublic(publicKey), "RSA");
 
         //encrypt message
         final byte[] encryptedMessage = MessageEncryption.Encrypt(message, secretKey, "AES");
@@ -31,12 +30,15 @@ public class Encryptor {
         return new EncryptionResult(encryptedSecretKey, encryptedMessage);
     }
 
-    public static PublicKey getPublic(String filename, String algorithm) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        byte[] keyBytes = FileUtils.readFromFile(filename, GhostSmsApplication.getAppContext());
-        X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
-        KeyFactory kf = KeyFactory.getInstance(algorithm);
-        return kf.generatePublic(spec);
+    public static String getSenderPublic() throws NoSuchAlgorithmException, InvalidKeySpecException {
+        byte[] keyBytes = FileUtils.readFromFile(KeyGenerator.PUBLIC_KEY_PATH, GhostSmsApplication.getAppContext());
+        return StringUtils.fromBytesToString(StringUtils.encodeBase64(keyBytes));
+    }
 
+    public static PublicKey getDestinationPublic(byte[]  publicKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKey);
+        KeyFactory kf = KeyFactory.getInstance("RSA");
+        return kf.generatePublic(spec);
     }
 
 }

@@ -2,8 +2,9 @@ package com.blacknebula.ghostsms.utils;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -122,6 +123,12 @@ public class ViewUtils {
         }
 
         return builder.show();
+    }
+
+    public static void copyToClipboard(Context context, String label, String text) {
+        final ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        final ClipData clip = ClipData.newPlainText(label, text);
+        clipboard.setPrimaryClip(clip);
     }
 
     public interface OnActionListener {

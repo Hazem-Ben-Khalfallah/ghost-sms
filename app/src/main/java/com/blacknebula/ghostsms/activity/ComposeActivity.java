@@ -6,15 +6,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.blacknebula.ghostsms.R;
+import com.blacknebula.ghostsms.dto.ContactDto;
 import com.blacknebula.ghostsms.utils.ContactUtils;
 import com.blacknebula.ghostsms.utils.Logger;
 import com.blacknebula.ghostsms.utils.PermissionUtils;
@@ -78,24 +76,6 @@ public class ComposeActivity extends AbstractCustomToolbarActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.settings:
-                Toast.makeText(this, "Settings", Toast.LENGTH_LONG).show();
-                break;
-            default:
-                break;
-        }
-        return true;
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case SEND_SMS_REQUEST_CODE: {
@@ -123,7 +103,7 @@ public class ComposeActivity extends AbstractCustomToolbarActivity {
     @OnClick(R.id.send)
     public void sendSms(View view) {
         final ContactDto destinationContact = (ContactDto) destination.getSelectedChipList().get(0);
-        sendSms(destinationContact.getInfo(), message.getText().toString());
+        sendSms(destinationContact.getInfo(), message.getText().toString(), rsaKeyWrapper.getEditText().getText().toString());
     }
 
     private void requestSendSmsPermission() {

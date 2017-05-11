@@ -7,11 +7,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.blacknebula.ghostsms.R;
+import com.blacknebula.ghostsms.dto.SmsDto;
 import com.blacknebula.ghostsms.encryption.SmsEncryptionWrapper;
 import com.blacknebula.ghostsms.utils.SmsUtils;
 import com.blacknebula.ghostsms.utils.StringUtils;
@@ -112,27 +110,9 @@ public class OpenSmsActivity extends AbstractCustomToolbarActivity {
             //Reset edit text
             mChatView.setInputText("");
             // send sms
-            sendSms(smsDto.getPhone(), messageText);
+            sendSms(smsDto.getPhone(), messageText, "");
         });
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.settings:
-                Toast.makeText(this, "Settings", Toast.LENGTH_LONG).show();
-                break;
-            default:
-                break;
-        }
-        return true;
     }
 
     private String readMessage(SmsDto smsDto) {

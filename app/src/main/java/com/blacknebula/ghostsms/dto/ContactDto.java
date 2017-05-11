@@ -1,4 +1,4 @@
-package com.blacknebula.ghostsms.activity;
+package com.blacknebula.ghostsms.dto;
 
 import android.graphics.drawable.Drawable;
 import android.net.Uri;

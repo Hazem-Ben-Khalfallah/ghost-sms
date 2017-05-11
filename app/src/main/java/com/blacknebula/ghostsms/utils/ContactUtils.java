@@ -4,8 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 
-import com.blacknebula.ghostsms.activity.ContactCursorTransformer;
-import com.blacknebula.ghostsms.activity.ContactDto;
+import com.blacknebula.ghostsms.transformer.ContactCursorTransformer;
+import com.blacknebula.ghostsms.dto.ContactDto;
 
 import java.util.ArrayList;
 import java.util.List;

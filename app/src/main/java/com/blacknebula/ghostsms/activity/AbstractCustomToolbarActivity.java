@@ -1,7 +1,10 @@
 package com.blacknebula.ghostsms.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -24,6 +27,7 @@ import butterknife.BindView;
  */
 
 public abstract class AbstractCustomToolbarActivity extends AppCompatActivity {
+    private static final String ENCRYPTION_ENABLED = "ENCRYPTION_ENABLED";
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.secureLayout)
@@ -40,7 +44,7 @@ public abstract class AbstractCustomToolbarActivity extends AppCompatActivity {
 
         final TextView secureLabel = (TextView) toolbar.findViewById(R.id.secureLabel);
         secureButton.setOnCheckedChangeListener((view, isChecked) -> {
-            PreferenceUtils.getPreferences().edit().putBoolean("encryptionEnabled", isChecked).apply();
+            PreferenceUtils.getPreferences().edit().putBoolean(ENCRYPTION_ENABLED, isChecked).apply();
             if (isChecked) {
                 secureLabel.setText("Encryption on");
             } else {
@@ -50,7 +54,26 @@ public abstract class AbstractCustomToolbarActivity extends AppCompatActivity {
         });
     }
 
-    public void sendSms(String phone, String messageText) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.settings:
+                final Intent intent = new Intent(GhostSmsApplication.getAppContext(), SettingsActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    public void sendSms(String phone, String messageText, String publicKeyBase64) {
         try {
             if (!PermissionUtils.hasSendSmsPermission(GhostSmsApplication.getAppContext())) {
                 return;
@@ -67,10 +90,13 @@ public abstract class AbstractCustomToolbarActivity extends AppCompatActivity {
 
             final String messageBody;
             if (isEncryptionEnabled()) {
-                messageBody = SmsEncryptionWrapper.encrypt(messageText);
+                byte[] publicKey = StringUtils.decodeBase64(publicKeyBase64);
+                messageBody = SmsEncryptionWrapper.encrypt(messageText, publicKey);
+                Logger.info(Logger.Type.GHOST_SMS, "*** decrypted: %s", SmsEncryptionWrapper.decrypt(messageBody));
             } else {
                 messageBody = messageText;
             }
+
 
             SmsUtils.sendSms(this, phone, messageBody);
         } catch (Exception e) {
@@ -79,7 +105,7 @@ public abstract class AbstractCustomToolbarActivity extends AppCompatActivity {
     }
 
     public boolean isEncryptionEnabled() {
-        return PreferenceUtils.getBoolean("encryptionEnabled", true);
+        return PreferenceUtils.getBoolean(ENCRYPTION_ENABLED, true);
     }
 
     protected OnEncryptionChangeListener getOnEncryptionChangeListener() {

@@ -19,4 +19,7 @@
     <string name="mark_as_read">Mark as read</string>
     <string name="sms_remove_title">Remove Sms</string>
     <string name="sms_remove_description">1 Sms will be deleted</string>
+
+    <string name="write_settings_request_permission_title">Write settings permission</string>
+    <string name="write_settings_request_permission_message">Permission to write settings is needed for this app</string>
 </resources>

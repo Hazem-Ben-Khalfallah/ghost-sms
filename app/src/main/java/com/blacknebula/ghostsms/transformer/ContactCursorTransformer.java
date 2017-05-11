@@ -1,4 +1,4 @@
-package com.blacknebula.ghostsms.activity;
+package com.blacknebula.ghostsms.transformer;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 
 import com.blacknebula.ghostsms.R;
+import com.blacknebula.ghostsms.dto.ContactDto;
 import com.blacknebula.ghostsms.utils.ContactUtils;
 import com.blacknebula.ghostsms.utils.StringUtils;
 import com.blacknebula.ghostsms.utils.ViewUtils;

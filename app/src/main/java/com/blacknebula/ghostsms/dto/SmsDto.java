@@ -1,4 +1,4 @@
-package com.blacknebula.ghostsms.activity;
+package com.blacknebula.ghostsms.dto;
 
 import android.support.annotation.NonNull;
 

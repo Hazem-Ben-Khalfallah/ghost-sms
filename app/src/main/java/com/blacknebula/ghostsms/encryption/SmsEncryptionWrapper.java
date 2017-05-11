@@ -12,8 +12,8 @@ import java.security.GeneralSecurityException;
  */
 
 public class SmsEncryptionWrapper {
-    public static String encrypt(String message) throws IOException, GeneralSecurityException {
-        final EncryptionResult encryptedResult = Encryptor.encrypt(message);
+    public static String encrypt(String message, byte[] publicKey) throws IOException, GeneralSecurityException {
+        final EncryptionResult encryptedResult = Encryptor.encrypt(message, publicKey);
         final String json = new Gson().toJson(encryptedResult);
         final byte[] messageBase64 = StringUtils.encodeBase64(StringUtils.fromStringToBytes(json));
         return StringUtils.fromBytesToString(messageBase64);
