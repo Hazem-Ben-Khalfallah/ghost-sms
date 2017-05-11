@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/secure"
-            android:text="Encryption on" />
+            android:text="@string/encryption_on" />
     </RelativeLayout>
 
 </android.support.v7.widget.Toolbar>

@@ -71,12 +71,7 @@ public class LockActivity extends AppCompatActivity {
             } else {
                 isValid = initializeLockPattern(insertedPattern);
             }
-            ThreadUtils.delay(1000, new Runnable() {
-                @Override
-                public void run() {
-                    patternLockView.clearPattern();
-                }
-            });
+            ThreadUtils.delay(1000, () -> patternLockView.clearPattern());
             if (isValid) {
                 final Intent intent = new Intent(GhostSmsApplication.getAppContext(), ListSmsActivity.class);
                 startActivity(intent);

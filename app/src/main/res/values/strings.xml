@@ -22,4 +22,14 @@
 
     <string name="write_settings_request_permission_title">Write settings permission</string>
     <string name="write_settings_request_permission_message">Permission to write settings is needed for this app</string>
+    <string name="encryption_on">Encryption on</string>
+    <string name="encryption_off">Encryption off</string>
+    <string name="new_message">new message ...</string>
+    <string name="message_decryption_fail">oops, something went wrong!</string>
+    <string name="chat_username_me">Me</string>
+    <string name="invalid_phone_number">Invalid phone number</string>
+    <string name="message_empty_error">Text message should not be empty</string>
+    <string name="public_rsa_key">Public RSA key</string>
+    <string name="remember_public_key">Remember this key</string>
+    <string name="send">Send</string>
 </resources>

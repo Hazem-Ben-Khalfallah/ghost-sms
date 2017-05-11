@@ -1,4 +1,4 @@
-package com.blacknebula.ghostsms.activity;
+package com.blacknebula.ghostsms.adapter;
 
 import android.content.Context;
 import android.text.format.DateUtils;

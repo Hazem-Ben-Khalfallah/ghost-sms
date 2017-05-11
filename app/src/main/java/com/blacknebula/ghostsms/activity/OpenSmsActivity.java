@@ -43,14 +43,14 @@ public class OpenSmsActivity extends AbstractCustomToolbarActivity {
         Intent intent = getIntent();
         final Parcelable parcelable = intent.getParcelableExtra(SMS_DETAILS);
         final SmsDto smsDto = Parcels.unwrap(parcelable);
-        final List<SmsDto> conversations = SmsUtils.getConversation(this, smsDto.getThreadId(), Optional.<Long>absent());
+        final List<SmsDto> conversations = SmsUtils.getConversation(this, smsDto.getThreadId(), Optional.absent());
 
         //User id
         int myId = 0;
         //User icon
         Bitmap myIcon = BitmapFactory.decodeResource(getResources(), R.drawable.circle);
         //User name
-        String myName = "Me";
+        String myName = getString(R.string.chat_username_me);
         final User me = new User(myId, myName, myIcon);
 
         int otherId = 1;
@@ -110,7 +110,7 @@ public class OpenSmsActivity extends AbstractCustomToolbarActivity {
             //Reset edit text
             mChatView.setInputText("");
             // send sms
-            sendSms(smsDto.getPhone(), messageText, "");
+            SmsSender.sendSms(OpenSmsActivity.this, smsDto.getPhone(), messageText, "");
         });
 
     }
@@ -121,7 +121,7 @@ public class OpenSmsActivity extends AbstractCustomToolbarActivity {
             try {
                 message = StringUtils.getEmojiByUnicode(StringUtils.locked_emoji) + " " + SmsEncryptionWrapper.decrypt(smsDto.getMessage());
             } catch (Exception e) {
-                message = StringUtils.getEmojiByUnicode(StringUtils.warn_emoji) + " oops, something went wrong!";
+                message = StringUtils.getEmojiByUnicode(StringUtils.warn_emoji) + getString(R.string.message_decryption_fail);
             }
         } else {
             message = smsDto.getMessage();
@@ -138,7 +138,7 @@ public class OpenSmsActivity extends AbstractCustomToolbarActivity {
         mChatView.setUsernameTextColor(Color.WHITE);
         mChatView.setSendTimeTextColor(Color.WHITE);
         mChatView.setDateSeparatorColor(Color.WHITE);
-        mChatView.setInputTextHint("new message ...");
+        mChatView.setInputTextHint(getString(R.string.new_message));
         mChatView.setMessageMarginTop(5);
         mChatView.setMessageMarginBottom(5);
         mChatView.setSendIcon(R.drawable.ic_action_send);

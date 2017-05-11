@@ -9,12 +9,12 @@ import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
 import com.blacknebula.ghostsms.GhostSmsApplication;
 import com.blacknebula.ghostsms.R;
+import com.blacknebula.ghostsms.adapter.CustomUsersAdapter;
 import com.blacknebula.ghostsms.dto.SmsDto;
 import com.blacknebula.ghostsms.utils.Logger;
 import com.blacknebula.ghostsms.utils.PermissionUtils;
@@ -59,12 +59,7 @@ public class ListSmsActivity extends AbstractCustomToolbarActivity implements
             requestReceiveSmsPermission();
         } else {
             Logger.warn(Logger.Type.GHOST_SMS, "SMS not support for this device!");
-            ViewUtils.openUniqueActionDialog(this, R.string.sms_not_supported_title, R.string.sms_not_supported_message, new ViewUtils.OnClickListener() {
-                @Override
-                public void onClick() {
-                    finish();
-                }
-            });
+            ViewUtils.openUniqueActionDialog(this, R.string.sms_not_supported_title, R.string.sms_not_supported_message, this::finish);
         }
 
         displaySmsList();
@@ -82,12 +77,7 @@ public class ListSmsActivity extends AbstractCustomToolbarActivity implements
                 .setDimBackgrounds(true)
                 .setListView(listSms);
         listSms.setAdapter(mAdapter);
-        listSms.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                openSmsDetails(position);
-            }
-        });
+        listSms.setOnItemClickListener((parent, view, position, id) -> openSmsDetails(position));
 
         mAdapter.addBackground(SwipeDirection.DIRECTION_FAR_LEFT, R.layout.row_bg_left_far)
                 .addBackground(SwipeDirection.DIRECTION_NORMAL_LEFT, R.layout.row_bg_left_far)
@@ -257,9 +247,7 @@ public class ListSmsActivity extends AbstractCustomToolbarActivity implements
 
     @Override
     public boolean hasActions(int position, SwipeDirection direction) {
-        if (direction.isLeft()) return true;
-        if (direction.isRight()) return true;
-        return false;
+        return direction.isLeft() || direction.isRight();
     }
 
     @Override
@@ -294,20 +282,6 @@ public class ListSmsActivity extends AbstractCustomToolbarActivity implements
             }
 
             mAdapter.notifyDataSetChanged();
-        }
-    }
-
-    private void markAsRead(int position) {
-        if (SmsUtils.isDefaultSmsApp(this)) {
-            final SmsDto sms = (SmsDto) mAdapter.getItem(position);
-            final boolean status = SmsUtils.markSmsAsRead(this, sms.getId());
-            if (status) {
-                ViewUtils.showToast(this, "Sms marked as read");
-            } else {
-                ViewUtils.showToast(this, "Sms could not be marked as read");
-            }
-        } else {
-            ViewUtils.showToast(this, "Ghost SMS is not default sms app");
         }
     }
 

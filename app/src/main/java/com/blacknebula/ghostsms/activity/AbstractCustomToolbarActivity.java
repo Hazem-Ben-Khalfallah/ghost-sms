@@ -11,13 +11,6 @@ import android.widget.TextView;
 
 import com.blacknebula.ghostsms.GhostSmsApplication;
 import com.blacknebula.ghostsms.R;
-import com.blacknebula.ghostsms.encryption.SmsEncryptionWrapper;
-import com.blacknebula.ghostsms.utils.Logger;
-import com.blacknebula.ghostsms.utils.PermissionUtils;
-import com.blacknebula.ghostsms.utils.PreferenceUtils;
-import com.blacknebula.ghostsms.utils.SmsUtils;
-import com.blacknebula.ghostsms.utils.StringUtils;
-import com.blacknebula.ghostsms.utils.ViewUtils;
 import com.suke.widget.SwitchButton;
 
 import butterknife.BindView;
@@ -27,7 +20,6 @@ import butterknife.BindView;
  */
 
 public abstract class AbstractCustomToolbarActivity extends AppCompatActivity {
-    private static final String ENCRYPTION_ENABLED = "ENCRYPTION_ENABLED";
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.secureLayout)
@@ -40,15 +32,15 @@ public abstract class AbstractCustomToolbarActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         final SwitchButton secureButton = (SwitchButton) toolbar.findViewById(R.id.secure);
-        secureButton.setChecked(isEncryptionEnabled());
+        secureButton.setChecked(SmsSender.isEncryptionEnabled());
 
         final TextView secureLabel = (TextView) toolbar.findViewById(R.id.secureLabel);
         secureButton.setOnCheckedChangeListener((view, isChecked) -> {
-            PreferenceUtils.getPreferences().edit().putBoolean(ENCRYPTION_ENABLED, isChecked).apply();
+            SmsSender.setEncryptionEnabled(isChecked);
             if (isChecked) {
-                secureLabel.setText("Encryption on");
+                secureLabel.setText(R.string.encryption_on);
             } else {
-                secureLabel.setText("Encryption off");
+                secureLabel.setText(R.string.encryption_off);
             }
             getOnEncryptionChangeListener().onEncryptionChange(isChecked);
         });
@@ -73,41 +65,6 @@ public abstract class AbstractCustomToolbarActivity extends AppCompatActivity {
         return true;
     }
 
-    public void sendSms(String phone, String messageText, String publicKeyBase64) {
-        try {
-            if (!PermissionUtils.hasSendSmsPermission(GhostSmsApplication.getAppContext())) {
-                return;
-            }
-            if (StringUtils.isEmpty(phone)) {
-                ViewUtils.showToast(GhostSmsApplication.getAppContext(), "Invalid phone number", phone);
-                return;
-            }
-
-            if (StringUtils.isEmpty(messageText)) {
-                ViewUtils.showToast(GhostSmsApplication.getAppContext(), "Text message should not be empty");
-                return;
-            }
-
-            final String messageBody;
-            if (isEncryptionEnabled()) {
-                byte[] publicKey = StringUtils.decodeBase64(publicKeyBase64);
-                messageBody = SmsEncryptionWrapper.encrypt(messageText, publicKey);
-                Logger.info(Logger.Type.GHOST_SMS, "*** decrypted: %s", SmsEncryptionWrapper.decrypt(messageBody));
-            } else {
-                messageBody = messageText;
-            }
-
-
-            SmsUtils.sendSms(this, phone, messageBody);
-        } catch (Exception e) {
-            Logger.error(Logger.Type.GHOST_SMS, e, "Error while encrypting a message");
-        }
-    }
-
-    public boolean isEncryptionEnabled() {
-        return PreferenceUtils.getBoolean(ENCRYPTION_ENABLED, true);
-    }
-
     protected OnEncryptionChangeListener getOnEncryptionChangeListener() {
         return isEncryptionEnabled -> {
 
@@ -122,7 +79,7 @@ public abstract class AbstractCustomToolbarActivity extends AppCompatActivity {
         }
     }
 
-    public interface OnEncryptionChangeListener {
+    interface OnEncryptionChangeListener {
         void onEncryptionChange(boolean isEncryptionEnabled);
     }
 }

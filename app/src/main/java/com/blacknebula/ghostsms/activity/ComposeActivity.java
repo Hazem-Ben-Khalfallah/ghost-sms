@@ -103,7 +103,7 @@ public class ComposeActivity extends AbstractCustomToolbarActivity {
     @OnClick(R.id.send)
     public void sendSms(View view) {
         final ContactDto destinationContact = (ContactDto) destination.getSelectedChipList().get(0);
-        sendSms(destinationContact.getInfo(), message.getText().toString(), rsaKeyWrapper.getEditText().getText().toString());
+        SmsSender.sendSms(this, destinationContact.getInfo(), message.getText().toString(), rsaKeyWrapper.getEditText().getText().toString());
     }
 
     private void requestSendSmsPermission() {

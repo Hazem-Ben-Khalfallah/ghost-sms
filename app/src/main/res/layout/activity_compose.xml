@@ -45,7 +45,7 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Public RSA key"
+                    android:hint="@string/public_rsa_key"
                     android:maxLines="3" />
             </com.wrapp.floatlabelededittext.FloatLabeledEditText>
 
@@ -61,7 +61,7 @@
                     android:checked="true"
                     android:paddingEnd="5dp"
                     android:paddingStart="5dp"
-                    android:text="Remember this key" />
+                    android:text="@string/remember_public_key" />
             </RelativeLayout>
         </LinearLayout>
 
@@ -88,7 +88,7 @@
                 android:id="@+id/message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter message"
+                android:hint="@string/new_message"
                 android:maxLines="1" />
         </android.support.design.widget.TextInputLayout>
 
@@ -102,7 +102,7 @@
                 style="@style/Base.Widget.AppCompat.Button.Borderless"
                 android:layout_width="@dimen/icon_normal"
                 android:layout_height="match_parent"
-                android:contentDescription="Send"
+                android:contentDescription="@string/send"
                 android:src="@drawable/ic_action_send" />
 
         </RelativeLayout>
