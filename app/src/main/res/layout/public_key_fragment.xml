@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
+
+    <com.wrapp.floatlabelededittext.FloatLabeledEditText
+        android:id="@+id/rsaKeyWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="5dp"
+        android:paddingStart="5dp"
+        app:fletTextAppearance="@style/HeaderTextStyle">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/public_rsa_key"
+            android:maxLines="3" />
+    </com.wrapp.floatlabelededittext.FloatLabeledEditText>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/rememberKey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:checked="true"
+            android:paddingEnd="5dp"
+            android:paddingStart="5dp"
+            android:text="@string/remember_public_key" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@android:string/cancel" />
+
+        <Button
+            android:id="@+id/ok"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@android:string/ok" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

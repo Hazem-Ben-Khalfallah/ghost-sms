@@ -1,5 +1,6 @@
 package com.blacknebula.ghostsms.activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,6 +8,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.widget.Button;
 
 import com.blacknebula.ghostsms.R;
 import com.blacknebula.ghostsms.dto.SmsDto;
@@ -18,6 +21,7 @@ import com.github.bassaer.chatmessageview.models.Message;
 import com.github.bassaer.chatmessageview.models.User;
 import com.github.bassaer.chatmessageview.views.ChatView;
 import com.google.common.base.Optional;
+import com.wrapp.floatlabelededittext.FloatLabeledEditText;
 
 import org.parceler.Parcels;
 
@@ -34,6 +38,10 @@ public class OpenSmsActivity extends AbstractCustomToolbarActivity {
     @BindView(R.id.chat_view)
     ChatView mChatView;
 
+    private User me;
+    private User otherUser;
+    private SmsDto smsDto;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,27 +50,27 @@ public class OpenSmsActivity extends AbstractCustomToolbarActivity {
 
         Intent intent = getIntent();
         final Parcelable parcelable = intent.getParcelableExtra(SMS_DETAILS);
-        final SmsDto smsDto = Parcels.unwrap(parcelable);
+        smsDto = Parcels.unwrap(parcelable);
+        configureChatView();
+        loadConversation();
+
+        //Click Send Button
+        mChatView.setOnClickSendButtonListener(getOnClickSendButtonListener());
+
+    }
+
+    private void loadConversation() {
         final List<SmsDto> conversations = SmsUtils.getConversation(this, smsDto.getThreadId(), Optional.absent());
 
-        //User id
-        int myId = 0;
         //User icon
-        Bitmap myIcon = BitmapFactory.decodeResource(getResources(), R.drawable.circle);
-        //User name
-        String myName = getString(R.string.chat_username_me);
-        final User me = new User(myId, myName, myIcon);
+        final Bitmap myIcon = BitmapFactory.decodeResource(getResources(), R.drawable.circle);
+        me = new User(0, getString(R.string.chat_username_me), myIcon);
 
-        int otherId = 1;
         Bitmap otherIcon = BitmapFactory.decodeResource(getResources(), R.drawable.circle);
         if (StringUtils.isNotEmpty(smsDto.getPhotoUri())) {
             otherIcon = ViewUtils.toBitmap(this, smsDto.getPhotoUri(), otherIcon);
         }
-        String otherName = smsDto.getDisplayName();
-        final User otherUser = new User(otherId, otherName, otherIcon);
-
-        configureChatView();
-
+        otherUser = new User(1, smsDto.getDisplayName(), otherIcon);
 
         for (SmsDto sms : conversations) {
             final String messageText = readMessage(sms);
@@ -90,29 +98,6 @@ public class OpenSmsActivity extends AbstractCustomToolbarActivity {
             }
 
         }
-
-
-        //Click Send Button
-        mChatView.setOnClickSendButtonListener(view -> {
-            final String messageText = mChatView.getInputText();
-            if (StringUtils.isEmpty(messageText)) {
-                return;
-            }
-            //new message
-            Message message = new Message.Builder()
-                    .setUser(me)
-                    .setRightMessage(true)
-                    .setMessageText(messageText)
-                    .hideIcon(true)
-                    .build();
-            //Set to chat view
-            mChatView.send(message);
-            //Reset edit text
-            mChatView.setInputText("");
-            // send sms
-            SmsSender.sendSms(OpenSmsActivity.this, smsDto.getPhone(), messageText, "");
-        });
-
     }
 
     private String readMessage(SmsDto smsDto) {
@@ -127,6 +112,50 @@ public class OpenSmsActivity extends AbstractCustomToolbarActivity {
             message = smsDto.getMessage();
         }
         return message;
+    }
+
+    private View.OnClickListener getOnClickSendButtonListener() {
+        return v -> {
+            final String messageText = mChatView.getInputText();
+            if (StringUtils.isEmpty(messageText)) {
+                return;
+            }
+            if (!SmsSender.isEncryptionEnabled()) {
+                sendSms(messageText, null);
+            } else {
+                // custom dialog
+                final Dialog dialog = new Dialog(OpenSmsActivity.this);
+                dialog.setContentView(R.layout.public_key_fragment);
+                final FloatLabeledEditText publicKey = (FloatLabeledEditText) dialog.findViewById(R.id.rsaKeyWrapper);
+                final Button okButton = (Button) dialog.findViewById(R.id.ok);
+                okButton.setOnClickListener(b -> {
+                    sendSms(messageText, publicKey.getEditText().getText().toString());
+                    dialog.dismiss();
+                });
+                final Button cancelButton = (Button) dialog.findViewById(R.id.cancel);
+                cancelButton.setOnClickListener(b -> dialog.dismiss());
+                dialog.show();
+            }
+
+        };
+    }
+
+    private void sendSms(String messageText, String publicKey) {
+        // send sms
+        final boolean result = SmsSender.sendSms(OpenSmsActivity.this, smsDto.getPhone(), messageText, publicKey);
+        if (result) {
+            //new message
+            final Message message = new Message.Builder()
+                    .setUser(me)
+                    .setRightMessage(true)
+                    .setMessageText(messageText)
+                    .hideIcon(true)
+                    .build();
+            //Set to chat view
+            mChatView.send(message);
+            //Reset edit text
+            mChatView.setInputText("");
+        }
     }
 
     private void configureChatView() {

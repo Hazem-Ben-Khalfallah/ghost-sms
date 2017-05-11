@@ -27,19 +27,19 @@ public class SmsSender {
         PreferenceUtils.getPreferences().edit().putBoolean(ENCRYPTION_ENABLED, encryptionEnabled).apply();
     }
 
-    public static void sendSms(Context context, String phone, String messageText, String publicKeyBase64) {
+    public static boolean sendSms(Context context, String phone, String messageText, String publicKeyBase64) {
         try {
             if (!PermissionUtils.hasSendSmsPermission(GhostSmsApplication.getAppContext())) {
-                return;
+                return false;
             }
             if (StringUtils.isEmpty(phone)) {
                 ViewUtils.showToast(GhostSmsApplication.getAppContext(), context.getString(R.string.invalid_phone_number));
-                return;
+                return false;
             }
 
             if (StringUtils.isEmpty(messageText)) {
                 ViewUtils.showToast(GhostSmsApplication.getAppContext(), context.getString(R.string.message_empty_error));
-                return;
+                return false;
             }
 
             final String messageBody;
@@ -53,8 +53,10 @@ public class SmsSender {
 
 
             SmsUtils.sendSms(context, phone, messageBody);
+            return true;
         } catch (Exception e) {
             Logger.error(Logger.Type.GHOST_SMS, e, "Error while encrypting a message");
         }
+        return false;
     }
 }
