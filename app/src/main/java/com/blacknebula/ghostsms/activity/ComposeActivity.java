@@ -6,16 +6,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blacknebula.ghostsms.R;
@@ -26,7 +22,6 @@ import com.blacknebula.ghostsms.utils.PermissionUtils;
 import com.blacknebula.ghostsms.utils.SmsUtils;
 import com.blacknebula.ghostsms.utils.ViewUtils;
 import com.pchmn.materialchips.ChipsInput;
-import com.suke.widget.SwitchButton;
 import com.wrapp.floatlabelededittext.FloatLabeledEditText;
 
 import java.util.List;
@@ -35,7 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ComposeActivity extends AppCompatActivity {
+public class ComposeActivity extends AbstractCustomToolbarActivity {
     private static final int SEND_SMS_REQUEST_CODE = 2;
 
     @BindView(R.id.message)
@@ -50,8 +45,6 @@ public class ComposeActivity extends AppCompatActivity {
     FloatLabeledEditText rsaKeyWrapper;
     @BindView(R.id.rememberKey)
     CheckBox rememberKey;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,42 +52,30 @@ public class ComposeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_compose);
         ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
-
         if (SmsUtils.checkSmsSupport()) {
             requestSendSmsPermission();
         } else {
             Logger.warn(Logger.Type.GHOST_SMS, "SMS not support for this device!");
-            ViewUtils.openUniqueActionDialog(this, R.string.sms_not_supported_title, R.string.sms_not_supported_message, new ViewUtils.OnClickListener() {
-                @Override
-                public void onClick() {
-                    finish();
-                }
-            });
+            ViewUtils.openUniqueActionDialog(this, R.string.sms_not_supported_title, R.string.sms_not_supported_message, () -> finish());
         }
 
         messageLayout.setCounterEnabled(true);
 
         final List<ContactDto> contacts = ContactUtils.listContacts(ComposeActivity.this);
         destination.setFilterableList(contacts);
+    }
 
-        final SwitchButton secureButton = (SwitchButton) toolbar.findViewById(R.id.secure);
-        final TextView secureLabel = (TextView) toolbar.findViewById(R.id.secureLabel);
-        secureButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-                if (isChecked) {
-                    rsaKeyWrapper.setVisibility(View.VISIBLE);
-                    rememberKey.setVisibility(View.VISIBLE);
-                    secureLabel.setText("Encryption on");
-                } else {
-                    rsaKeyWrapper.setVisibility(View.INVISIBLE);
-                    rememberKey.setVisibility(View.INVISIBLE);
-                    secureLabel.setText("Encryption off");
-                }
+    @Override
+    protected OnEncryptionChangeListener getOnEncryptionChangeListener() {
+        return isEncryptionEnabled -> {
+            if (isEncryptionEnabled) {
+                rsaKeyWrapper.setVisibility(View.VISIBLE);
+                rememberKey.setVisibility(View.VISIBLE);
+            } else {
+                rsaKeyWrapper.setVisibility(View.INVISIBLE);
+                rememberKey.setVisibility(View.INVISIBLE);
             }
-        });
-
+        };
     }
 
     @Override
@@ -141,7 +122,7 @@ public class ComposeActivity extends AppCompatActivity {
 
 
     @OnClick(R.id.send)
-    public void encrypt(View view) {
+    public void sendSms(View view) {
         try {
             if (!PermissionUtils.hasSendSmsPermission(this)) {
                 return;

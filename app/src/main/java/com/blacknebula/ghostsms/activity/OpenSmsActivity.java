@@ -7,11 +7,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.blacknebula.ghostsms.R;
@@ -32,22 +29,18 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class OpenSmsActivity extends AppCompatActivity {
+public class OpenSmsActivity extends AbstractCustomToolbarActivity {
 
     public static final String SMS_DETAILS = "sms_details";
 
     @BindView(R.id.chat_view)
     ChatView mChatView;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_opensms);
         ButterKnife.bind(this);
-
-        setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
         final Parcelable parcelable = intent.getParcelableExtra(SMS_DETAILS);
@@ -102,22 +95,18 @@ public class OpenSmsActivity extends AppCompatActivity {
 
 
         //Click Send Button
-        mChatView.setOnClickSendButtonListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //new message
-                Message message = new Message.Builder()
-                        .setUser(me)
-                        .setRightMessage(true)
-                        .setMessageText(mChatView.getInputText())
-                        .hideIcon(true)
-                        .build();
-                //Set to chat view
-                mChatView.send(message);
-                //Reset edit text
-                mChatView.setInputText("");
-            }
-
+        mChatView.setOnClickSendButtonListener(view -> {
+            //new message
+            Message message = new Message.Builder()
+                    .setUser(me)
+                    .setRightMessage(true)
+                    .setMessageText(mChatView.getInputText())
+                    .hideIcon(true)
+                    .build();
+            //Set to chat view
+            mChatView.send(message);
+            //Reset edit text
+            mChatView.setInputText("");
         });
 
     }
