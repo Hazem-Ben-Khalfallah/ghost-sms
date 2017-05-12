@@ -12,13 +12,17 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.blacknebula.ghostsms.R;
-import com.blacknebula.ghostsms.dto.ContactDto;
+import com.blacknebula.ghostsms.model.ApplicationParameter;
+import com.blacknebula.ghostsms.model.ContactDto;
+import com.blacknebula.ghostsms.repository.ParameterRepository;
 import com.blacknebula.ghostsms.utils.ContactUtils;
 import com.blacknebula.ghostsms.utils.Logger;
 import com.blacknebula.ghostsms.utils.PermissionUtils;
 import com.blacknebula.ghostsms.utils.SmsUtils;
 import com.blacknebula.ghostsms.utils.ViewUtils;
+import com.google.common.base.Optional;
 import com.pchmn.materialchips.ChipsInput;
+import com.pchmn.materialchips.model.ChipInterface;
 import com.wrapp.floatlabelededittext.FloatLabeledEditText;
 
 import java.util.List;
@@ -60,6 +64,34 @@ public class ComposeActivity extends AbstractCustomToolbarActivity {
 
         final List<ContactDto> contacts = ContactUtils.listContacts(ComposeActivity.this);
         destination.setFilterableList(contacts);
+        destination.addChipsListener(new ChipsInput.ChipsListener() {
+            /*
+             * new item has been added to selected list
+             */
+            @Override
+            public void onChipAdded(ChipInterface chipInterface, int i) {
+                final ContactDto contactDto = (ContactDto) chipInterface;
+                final Optional<ApplicationParameter<String>> publicKeyParameterOptional = ParameterRepository.getParameter(ComposeActivity.this, contactDto.getInfo(), String.class);
+                if (publicKeyParameterOptional.isPresent()) {
+                    rsaKeyWrapper.getEditText().setText(publicKeyParameterOptional.get().value);
+                } else {
+                    rsaKeyWrapper.getEditText().setText("");
+                }
+            }
+
+            /*
+              new item has been removed to selected list
+             */
+            @Override
+            public void onChipRemoved(ChipInterface chipInterface, int i) {
+                rsaKeyWrapper.getEditText().setText("");
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence) {
+                // do nothing
+            }
+        });
     }
 
     @Override

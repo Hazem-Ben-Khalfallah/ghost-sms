@@ -9,9 +9,9 @@ import android.provider.Telephony;
 import android.telephony.SmsManager;
 
 import com.blacknebula.ghostsms.GhostSmsApplication;
-import com.blacknebula.ghostsms.dto.ContactDto;
+import com.blacknebula.ghostsms.model.ContactDto;
 import com.blacknebula.ghostsms.transformer.SmsCursorTransformer;
-import com.blacknebula.ghostsms.dto.SmsDto;
+import com.blacknebula.ghostsms.model.SmsDto;
 import com.google.common.base.Optional;
 
 import java.util.ArrayList;

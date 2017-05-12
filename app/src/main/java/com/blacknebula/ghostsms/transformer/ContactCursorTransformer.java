@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 
 import com.blacknebula.ghostsms.R;
-import com.blacknebula.ghostsms.dto.ContactDto;
+import com.blacknebula.ghostsms.model.ContactDto;
 import com.blacknebula.ghostsms.utils.ContactUtils;
 import com.blacknebula.ghostsms.utils.StringUtils;
 import com.blacknebula.ghostsms.utils.ViewUtils;

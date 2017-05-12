@@ -2,7 +2,7 @@ package com.blacknebula.ghostsms.transformer;
 
 import android.database.Cursor;
 
-import com.blacknebula.ghostsms.dto.SmsDto;
+import com.blacknebula.ghostsms.model.SmsDto;
 import com.blacknebula.ghostsms.encryption.SmsEncryptionWrapper;
 import com.blacknebula.ghostsms.utils.SmsUtils;
 

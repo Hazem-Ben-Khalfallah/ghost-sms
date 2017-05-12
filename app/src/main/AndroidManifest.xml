@@ -50,6 +50,14 @@
             </intent-filter>
         </receiver>
 
+        <provider
+            android:name="com.blacknebula.ghostsms.database.DBProvider"
+            android:authorities="com.blacknebula.ghostsms.provider"
+            android:label="GhostSmsProvider"
+            android:readPermission="com.blacknebula.ghostsms.provider.READ"
+            android:writePermission="com.blacknebula.ghostsms.provider.WRITE">
+        </provider>
+
     </application>
 
 </manifest>

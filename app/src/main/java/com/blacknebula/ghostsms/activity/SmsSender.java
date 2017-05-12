@@ -5,6 +5,7 @@ import android.content.Context;
 import com.blacknebula.ghostsms.GhostSmsApplication;
 import com.blacknebula.ghostsms.R;
 import com.blacknebula.ghostsms.encryption.SmsEncryptionWrapper;
+import com.blacknebula.ghostsms.repository.ParameterRepository;
 import com.blacknebula.ghostsms.utils.Logger;
 import com.blacknebula.ghostsms.utils.PermissionUtils;
 import com.blacknebula.ghostsms.utils.PreferenceUtils;
@@ -44,19 +45,33 @@ public class SmsSender {
 
             final String messageBody;
             if (isEncryptionEnabled()) {
+                // encrypt message
                 byte[] publicKey = StringUtils.decodeBase64(publicKeyBase64);
                 messageBody = SmsEncryptionWrapper.encrypt(messageText, publicKey);
+                //save public key locally
+                if (rememberKey) {
+                    savePublicKey(context, phone, publicKeyBase64);
+                } else {
+                    removePublicKey(context, phone);
+                }
                 Logger.info(Logger.Type.GHOST_SMS, "*** decrypted: %s, rememberKey: %s", SmsEncryptionWrapper.decrypt(messageBody), rememberKey);
             } else {
                 messageBody = messageText;
             }
-
-
+            // send sms
             SmsUtils.sendSms(context, phone, messageBody);
             return true;
         } catch (Exception e) {
             Logger.error(Logger.Type.GHOST_SMS, e, "Error while encrypting a message");
         }
         return false;
+    }
+
+    private static void removePublicKey(Context context, String phone) {
+        ParameterRepository.deleteParameter(context, phone);
+    }
+
+    private static void savePublicKey(Context context, String phone, String publicKeyBase64) {
+        ParameterRepository.insertOrUpdateParameter(context, phone, publicKeyBase64);
     }
 }

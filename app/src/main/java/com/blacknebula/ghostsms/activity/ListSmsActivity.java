@@ -15,7 +15,7 @@ import android.widget.ListView;
 import com.blacknebula.ghostsms.GhostSmsApplication;
 import com.blacknebula.ghostsms.R;
 import com.blacknebula.ghostsms.adapter.CustomUsersAdapter;
-import com.blacknebula.ghostsms.dto.SmsDto;
+import com.blacknebula.ghostsms.model.SmsDto;
 import com.blacknebula.ghostsms.utils.Logger;
 import com.blacknebula.ghostsms.utils.PermissionUtils;
 import com.blacknebula.ghostsms.utils.SmsUtils;

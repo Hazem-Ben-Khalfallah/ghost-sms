@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.blacknebula.ghostsms.R;
-import com.blacknebula.ghostsms.dto.SmsDto;
+import com.blacknebula.ghostsms.model.SmsDto;
 
 import java.util.List;
 

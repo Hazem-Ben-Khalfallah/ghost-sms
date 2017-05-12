@@ -13,8 +13,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 
 import com.blacknebula.ghostsms.R;
-import com.blacknebula.ghostsms.dto.SmsDto;
 import com.blacknebula.ghostsms.encryption.SmsEncryptionWrapper;
+import com.blacknebula.ghostsms.model.ApplicationParameter;
+import com.blacknebula.ghostsms.model.SmsDto;
+import com.blacknebula.ghostsms.repository.ParameterRepository;
 import com.blacknebula.ghostsms.utils.SmsUtils;
 import com.blacknebula.ghostsms.utils.StringUtils;
 import com.blacknebula.ghostsms.utils.ViewUtils;
@@ -127,6 +129,12 @@ public class OpenSmsActivity extends AbstractCustomToolbarActivity {
                 // custom dialog
                 final Dialog dialog = new Dialog(OpenSmsActivity.this);
                 dialog.setContentView(R.layout.public_key_fragment);
+                // fill rsa key if already saved
+                final FloatLabeledEditText rsaKeyWrapper = (FloatLabeledEditText) dialog.findViewById(R.id.rsaKeyWrapper);
+                final Optional<ApplicationParameter<String>> publicKeyParameterOptional = ParameterRepository.getParameter(OpenSmsActivity.this, smsDto.getPhone(), String.class);
+                if (publicKeyParameterOptional .isPresent()) {
+                    rsaKeyWrapper.getEditText().setText(publicKeyParameterOptional.get().value);
+                }
 
                 final Button okButton = (Button) dialog.findViewById(R.id.ok);
                 okButton.setOnClickListener(b -> {
@@ -134,7 +142,6 @@ public class OpenSmsActivity extends AbstractCustomToolbarActivity {
                     final CheckBox rememberKeyCheckBox = (CheckBox) dialog.findViewById(R.id.rememberKey);
                     final boolean rememberKey = rememberKeyCheckBox.isChecked();
                     // public key value
-                    final FloatLabeledEditText rsaKeyWrapper = (FloatLabeledEditText) dialog.findViewById(R.id.rsaKeyWrapper);
                     final String publicKeyBase64 = rsaKeyWrapper.getEditText().getText().toString();
                     //send sms
                     sendSms(messageText, publicKeyBase64, rememberKey);
