@@ -10,6 +10,7 @@ import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 
 import com.blacknebula.ghostsms.R;
 import com.blacknebula.ghostsms.dto.SmsDto;
@@ -121,15 +122,22 @@ public class OpenSmsActivity extends AbstractCustomToolbarActivity {
                 return;
             }
             if (!SmsSender.isEncryptionEnabled()) {
-                sendSms(messageText, null);
+                sendSms(messageText, null, false);
             } else {
                 // custom dialog
                 final Dialog dialog = new Dialog(OpenSmsActivity.this);
                 dialog.setContentView(R.layout.public_key_fragment);
-                final FloatLabeledEditText publicKey = (FloatLabeledEditText) dialog.findViewById(R.id.rsaKeyWrapper);
+
                 final Button okButton = (Button) dialog.findViewById(R.id.ok);
                 okButton.setOnClickListener(b -> {
-                    sendSms(messageText, publicKey.getEditText().getText().toString());
+                    // remember key
+                    final CheckBox rememberKeyCheckBox = (CheckBox) dialog.findViewById(R.id.rememberKey);
+                    final boolean rememberKey = rememberKeyCheckBox.isChecked();
+                    // public key value
+                    final FloatLabeledEditText rsaKeyWrapper = (FloatLabeledEditText) dialog.findViewById(R.id.rsaKeyWrapper);
+                    final String publicKeyBase64 = rsaKeyWrapper.getEditText().getText().toString();
+                    //send sms
+                    sendSms(messageText, publicKeyBase64, rememberKey);
                     dialog.dismiss();
                 });
                 final Button cancelButton = (Button) dialog.findViewById(R.id.cancel);
@@ -140,9 +148,9 @@ public class OpenSmsActivity extends AbstractCustomToolbarActivity {
         };
     }
 
-    private void sendSms(String messageText, String publicKey) {
+    private void sendSms(String messageText, String publicKey, boolean rememberKey) {
         // send sms
-        final boolean result = SmsSender.sendSms(OpenSmsActivity.this, smsDto.getPhone(), messageText, publicKey);
+        final boolean result = SmsSender.sendSms(OpenSmsActivity.this, smsDto.getPhone(), messageText, publicKey, rememberKey);
         if (result) {
             //new message
             final Message message = new Message.Builder()

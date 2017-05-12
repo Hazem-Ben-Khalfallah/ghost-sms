@@ -27,7 +27,7 @@ public class SmsSender {
         PreferenceUtils.getPreferences().edit().putBoolean(ENCRYPTION_ENABLED, encryptionEnabled).apply();
     }
 
-    public static boolean sendSms(Context context, String phone, String messageText, String publicKeyBase64) {
+    public static boolean sendSms(Context context, String phone, String messageText, String publicKeyBase64, boolean rememberKey) {
         try {
             if (!PermissionUtils.hasSendSmsPermission(GhostSmsApplication.getAppContext())) {
                 return false;
@@ -46,7 +46,7 @@ public class SmsSender {
             if (isEncryptionEnabled()) {
                 byte[] publicKey = StringUtils.decodeBase64(publicKeyBase64);
                 messageBody = SmsEncryptionWrapper.encrypt(messageText, publicKey);
-                Logger.info(Logger.Type.GHOST_SMS, "*** decrypted: %s", SmsEncryptionWrapper.decrypt(messageBody));
+                Logger.info(Logger.Type.GHOST_SMS, "*** decrypted: %s, rememberKey: %s", SmsEncryptionWrapper.decrypt(messageBody), rememberKey);
             } else {
                 messageBody = messageText;
             }
