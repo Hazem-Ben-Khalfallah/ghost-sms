@@ -15,10 +15,15 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
+import com.blacknebula.ghostsms.GhostSmsApplication;
 import com.blacknebula.ghostsms.R;
 import com.blacknebula.ghostsms.encryption.Encryptor;
+import com.blacknebula.ghostsms.encryption.KeyGenerator;
 import com.blacknebula.ghostsms.utils.Logger;
 import com.blacknebula.ghostsms.utils.ViewUtils;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -95,17 +100,47 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         setupActionBar();
         addPreferencesFromResource(R.xml.pref_settings);
         try {
-            final Preference publicRsaPreference = findPreference("public_rsa");
-            final String publicKey = Encryptor.getSenderPublic();
-            publicRsaPreference.setSummary(String.format("Click to copy\n%s", publicKey));
-            publicRsaPreference.setOnPreferenceClickListener(preference -> {
-                // copy to keyboard
-                ViewUtils.copyToClipboard(SettingsActivity.this, "Public Key", publicKey);
-                return false;
+            // init public key preference
+            initialisePublicRcaPreference();
+
+            // init reset RSA keys preference
+            final Preference resetRsaKeysPreference = findPreference("reset_rsa_keys");
+            resetRsaKeysPreference.setOnPreferenceClickListener(preference -> {
+                ViewUtils.openDialog(SettingsActivity.this, R.string.reset_rsa_keys_title, R.string.reset_rsa_keys_confirmation, new ViewUtils.OnActionListener() {
+                    @Override
+                    public void onPositiveClick() {
+                        try {
+                            KeyGenerator.generateRSAKeys(GhostSmsApplication.getAppContext());
+                            initialisePublicRcaPreference();
+                            ViewUtils.showToast(GhostSmsApplication.getAppContext(), "Encryption keys has been regenerated");
+                        } catch (Exception e) {
+                            Logger.error(Logger.Type.GHOST_SMS, e, "Error when regenerating RSA keys");
+                        }
+                    }
+
+                    @Override
+                    public void onNegativeClick() {
+
+                    }
+                });
+
+                return true;
             });
         } catch (Exception e) {
             Logger.error(Logger.Type.GHOST_SMS, e, "Error when retrieving Public RSA key");
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void initialisePublicRcaPreference() throws InvalidKeySpecException, NoSuchAlgorithmException {
+        final Preference publicRsaPreference = findPreference("public_rsa");
+        final String publicKey = Encryptor.getSenderPublic();
+        publicRsaPreference.setSummary(String.format("Click to copy\n%s", publicKey));
+        publicRsaPreference.setOnPreferenceClickListener(preference -> {
+            // copy to keyboard
+            ViewUtils.copyToClipboard(SettingsActivity.this, "Public Key", publicKey);
+            return true;
+        });
     }
 
     /**
