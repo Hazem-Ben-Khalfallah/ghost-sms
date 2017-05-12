@@ -38,4 +38,6 @@
     <string name="test_mode_summary">enable this option to stop sending sms for real</string>
     <string name="reset_rsa_key_summary">Click to regenerate RSA Public and private encryption keys. All previously received messages will be undecryptable.</string>
     <string name="reset_rsa_keys_confirmation">All your previously received messages will be undecryptable if your RSA keys are regenerated. Will you proceed?</string>
+    <string name="share_public_rsa_key_title">Share public RSA key</string>
+    <string name="share_public_rsa_key_summary">Share your public key with the persons you want to receive encrypted messages from.</string>
 </resources>

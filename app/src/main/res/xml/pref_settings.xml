@@ -8,6 +8,11 @@
             android:title="@string/public_rsa_key" />
 
         <Preference
+            android:key="share_public_rsa_key"
+            android:title="@string/share_public_rsa_key_title"
+            android:summary="@string/share_public_rsa_key_summary"/>
+
+        <Preference
             android:key="reset_rsa_keys"
             android:title="@string/reset_rsa_keys_title"
             android:summary="@string/reset_rsa_key_summary"/>
