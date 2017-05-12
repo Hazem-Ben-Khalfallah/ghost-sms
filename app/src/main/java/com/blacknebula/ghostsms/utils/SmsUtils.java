@@ -10,8 +10,8 @@ import android.telephony.SmsManager;
 
 import com.blacknebula.ghostsms.GhostSmsApplication;
 import com.blacknebula.ghostsms.model.ContactDto;
-import com.blacknebula.ghostsms.transformer.SmsCursorTransformer;
 import com.blacknebula.ghostsms.model.SmsDto;
+import com.blacknebula.ghostsms.transformer.SmsCursorTransformer;
 import com.google.common.base.Optional;
 
 import java.util.ArrayList;
@@ -96,15 +96,18 @@ public class SmsUtils {
     }
 
     /**
-     * todo remove if condition to send sms for real
+     * send an sms message to given destination
      *
-     * @param context
-     * @param message
+     * @param context context
+     * @param message sms message
+     * @param phone   phone number
      */
     public static void sendSms(Context context, String phone, String message) {
         ViewUtils.showToast(context, phone + "\n" + message);
-        if (false)
+        if (!PreferenceUtils.getBoolean("test_mode", false)) {
+            Logger.info(Logger.Type.GHOST_SMS, "sms sent to %s", phone);
             SmsManager.getDefault().sendTextMessage(phone, null, message, null, null);
+        }
     }
 
     public static class SmsFields {

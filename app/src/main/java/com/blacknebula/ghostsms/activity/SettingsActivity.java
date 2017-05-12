@@ -18,7 +18,6 @@ import android.view.MenuItem;
 import com.blacknebula.ghostsms.R;
 import com.blacknebula.ghostsms.encryption.Encryptor;
 import com.blacknebula.ghostsms.utils.Logger;
-import com.blacknebula.ghostsms.utils.StringUtils;
 import com.blacknebula.ghostsms.utils.ViewUtils;
 
 /**
@@ -94,7 +93,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
-        addPreferencesFromResource(R.xml.pref_notification);
+        addPreferencesFromResource(R.xml.pref_settings);
         try {
             final Preference publicRsaPreference = findPreference("public_rsa");
             final String publicKey = Encryptor.getSenderPublic();

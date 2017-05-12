@@ -1,0 +1,22 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:key="general_settings"
+        android:title="@string/pref_security">
+        <Preference
+            android:key="public_rsa"
+            android:title="@string/public_rsa_key" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="test_mode"
+            android:title="@string/test_mode_title"
+            android:summary="@string/test_mode_summary" />
+
+        <Preference
+            android:key="reset_rsa_keys"
+            android:title="@string/reset_rsa_keys" />
+    </PreferenceCategory>
+
+
+</PreferenceScreen>
