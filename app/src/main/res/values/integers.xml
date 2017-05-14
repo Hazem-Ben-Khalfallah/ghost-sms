@@ -2,4 +2,5 @@
 <resources>
     <integer name="sms_list_layout_weight">8</integer>
     <integer name="compose_button_weight">1</integer>
+    <dimen name="padding_lock_pattern_setting">20dp</dimen>
 </resources>

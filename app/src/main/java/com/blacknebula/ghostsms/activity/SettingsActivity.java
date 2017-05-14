@@ -2,29 +2,40 @@ package com.blacknebula.ghostsms.activity;
 
 
 import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.TextView;
 
+import com.andrognito.patternlockview.PatternLockView;
+import com.andrognito.patternlockview.listener.PatternLockViewListener;
+import com.andrognito.patternlockview.utils.PatternLockUtils;
 import com.blacknebula.ghostsms.GhostSmsApplication;
 import com.blacknebula.ghostsms.R;
 import com.blacknebula.ghostsms.encryption.Encryptor;
 import com.blacknebula.ghostsms.encryption.KeyGenerator;
 import com.blacknebula.ghostsms.utils.Logger;
 import com.blacknebula.ghostsms.utils.PreferenceUtils;
+import com.blacknebula.ghostsms.utils.ThreadUtils;
 import com.blacknebula.ghostsms.utils.ViewUtils;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.List;
+
+import static com.andrognito.patternlockview.PatternLockView.PatternViewMode.CORRECT;
+import static com.andrognito.patternlockview.PatternLockView.PatternViewMode.WRONG;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -38,31 +49,59 @@ import java.security.spec.InvalidKeySpecException;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
-    /**
-     * A preference value change listener that updates the preference's summary
-     * to reflect its new value.
-     */
-    private static Preference.OnPreferenceChangeListener bindPreferenceSummaryToValueListener = (preference, value) -> {
-        String stringValue = value.toString();
 
-        if (preference instanceof ListPreference) {
-            // For list preferences, look up the correct display value in
-            // the preference's 'entries' list.
-            ListPreference listPreference = (ListPreference) preference;
-            int index = listPreference.findIndexOfValue(stringValue);
+    private static final int MAX_ATTEMPTS = 3;
 
-            // Set the summary to reflect the new value.
-            preference.setSummary(
-                    index >= 0
-                            ? listPreference.getEntries()[index]
-                            : null);
-
-        } else {
-            // For all other preferences, set the summary to the value's
-            // simple string representation.
-            preference.setSummary(stringValue);
+    private Dialog dialog;
+    private PatternLockView patternLockView;
+    private TextView title;
+    private String tmpLockPattern;
+    private int step = 1;
+    private Animation shakeAnimation;
+    private int unlockAttempts = 0;
+    private PatternLockViewListener mPatternLockViewListener = new PatternLockViewListener() {
+        @Override
+        public void onStarted() {
+            // do nothing
         }
-        return true;
+
+        @Override
+        public void onProgress(List<PatternLockView.Dot> progressPattern) {
+            // do nothing
+        }
+
+        @Override
+        public void onComplete(List<PatternLockView.Dot> pattern) {
+            if (pattern == null || pattern.isEmpty()) {
+                return;
+            }
+            final String insertedPattern = PatternLockUtils.patternToSha1(patternLockView, pattern);
+            Logger.info(Logger.Type.GHOST_SMS, "Pattern complete: %s", insertedPattern);
+            final String lockPattern = PreferenceUtils.getString(ApplicationPreferences.LOCK_PATTERN, "");
+
+            boolean isValid;
+            if (step == 1) {
+                isValid = validateLockPattern(insertedPattern, lockPattern);
+                if (isValid) {
+                    title.setText(R.string.new_pattern_lock);
+                    step = 2;
+                    isValid = false;
+                }
+            } else {
+                isValid = initializeLockPattern(insertedPattern);
+            }
+            ThreadUtils.delay(500, () -> patternLockView.clearPattern());
+
+            if (isValid) {
+                dialog.dismiss();
+            }
+        }
+
+        @Override
+        public void onCleared() {
+            // do nothing
+        }
+
     };
 
     /**
@@ -74,24 +113,43 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
-    /**
-     * Binds a preference's summary to its value. More specifically, when the
-     * preference's value is changed, its summary (line of text below the
-     * preference title) is updated to reflect the value. The summary is also
-     * immediately updated upon calling this method. The exact display format is
-     * dependent on the type of preference.
-     *
-     * @see #bindPreferenceSummaryToValueListener
-     */
-    private static void bindPreferenceSummaryToValue(Preference preference) {
-        // Set the listener to watch for value changes.
-        preference.setOnPreferenceChangeListener(bindPreferenceSummaryToValueListener);
+    private boolean validateLockPattern(String insertedPattern, String lockPattern) {
+        if (lockPattern.equals(insertedPattern)) {
+            patternLockView.setViewMode(CORRECT);
+            return true;
+        } else {
+            unlockAttempts++;
+            if (unlockAttempts >= MAX_ATTEMPTS) {
+                ThreadUtils.delay(500, () -> dialog.dismiss());
+            }
+            patternLockView.setViewMode(WRONG);
+            title.startAnimation(shakeAnimation);
 
-        // Trigger the listener immediately with the preference's
-        // current value.
-        bindPreferenceSummaryToValueListener.onPreferenceChange(preference, PreferenceManager
-                .getDefaultSharedPreferences(preference.getContext())
-                .getString(preference.getKey(), ""));
+        }
+
+        return false;
+    }
+
+    private boolean initializeLockPattern(String insertedPattern) {
+        if (step == 2) {
+            title.setText(R.string.repeat_pattern_lock);
+            tmpLockPattern = insertedPattern;
+            step = 3;
+        } else {
+            if (tmpLockPattern.equals(insertedPattern)) {
+                patternLockView.setViewMode(CORRECT);
+                title.setText(R.string.unlock_app);
+                PreferenceUtils.getPreferences().edit().putString(ApplicationPreferences.LOCK_PATTERN, insertedPattern).apply();
+                return true;
+            } else {
+                title.setText(R.string.new_pattern_lock);
+                title.startAnimation(shakeAnimation);
+                patternLockView.setViewMode(WRONG);
+                tmpLockPattern = null;
+                step = 2;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -136,6 +194,30 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 }
             });
 
+            return true;
+        });
+
+        // init change lock pattern
+        final Preference lockPatternPreference = findPreference("change_pattern_lock");
+        lockPatternPreference.setOnPreferenceClickListener(preference -> {
+            unlockAttempts = 0;
+            step = 1;
+
+            // open custom
+            dialog = new Dialog(SettingsActivity.this);
+            dialog.setContentView(R.layout.lock_pattern_fragment);
+
+            patternLockView = (PatternLockView) dialog.findViewById(R.id.pattern_lock_view);
+            patternLockView.addPatternLockListener(mPatternLockViewListener);
+
+            title = (TextView) dialog.findViewById(R.id.title);
+            title.setText(R.string.current_pattern_lock);
+            shakeAnimation = AnimationUtils.loadAnimation(this, R.anim.shakeanim);
+
+
+            final Button cancelButton = (Button) dialog.findViewById(R.id.cancel);
+            cancelButton.setOnClickListener(b -> dialog.dismiss());
+            dialog.show();
             return true;
         });
     }

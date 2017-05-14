@@ -19,11 +19,11 @@ public class ThreadUtils {
 
     /**
      * @param millisInFuture The number of millis in the future before the call of #onFinish().
-     *                       Should be greater than 1000ms and a multiple of 1000ms
+     *                       Should be greater than 100ms and a multiple of 100ms
      * @param onFinish       Callback fired when the time is up.
      */
     public static void delay(int millisInFuture, final Runnable onFinish) {
-        countDown(millisInFuture, 1000, null, onFinish);
+        countDown(millisInFuture, 100, null, onFinish);
     }
 
 

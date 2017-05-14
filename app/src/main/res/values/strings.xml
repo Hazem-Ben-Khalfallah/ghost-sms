@@ -40,4 +40,7 @@
     <string name="reset_rsa_keys_confirmation">All your previously received messages will be undecryptable if your RSA keys are regenerated. Will you proceed?</string>
     <string name="share_public_rsa_key_title">Share public RSA key</string>
     <string name="share_public_rsa_key_summary">Share your public key with the persons you want to receive encrypted messages from.</string>
+    <string name="change_lock_pattern_title">Change lock pattern</string>
+    <string name="change_lock_pattern_summary">Click to change access lock pattern</string>
+    <string name="current_pattern_lock">Current pattern lock</string>
 </resources>

@@ -23,7 +23,7 @@
 
         <com.andrognito.patternlockview.PatternLockView
             android:id="@+id/pattern_lock_view"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="300dp"
             android:layout_gravity="center"
 

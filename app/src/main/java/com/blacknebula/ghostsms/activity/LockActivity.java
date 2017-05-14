@@ -33,7 +33,6 @@ import static com.andrognito.patternlockview.PatternLockView.PatternViewMode.WRO
 public class LockActivity extends AppCompatActivity {
 
     private static final int MAX_ATTEMPTS = 3;
-    private static String LOCK_PATTERN = "lock_pattern";
 
     @BindView(R.id.pattern_lock_view)
     PatternLockView patternLockView;
@@ -64,14 +63,14 @@ public class LockActivity extends AppCompatActivity {
             }
             final String insertedPattern = PatternLockUtils.patternToSha1(patternLockView, pattern);
             Logger.info(Logger.Type.GHOST_SMS, "Pattern complete: %s", insertedPattern);
-            final String lockPattern = PreferenceUtils.getString(LOCK_PATTERN, "");
+            final String lockPattern = PreferenceUtils.getString(ApplicationPreferences.LOCK_PATTERN, "");
             boolean isValid;
             if (StringUtils.isNotEmpty(lockPattern)) {
                 isValid = validateLockPattern(insertedPattern, lockPattern);
             } else {
                 isValid = initializeLockPattern(insertedPattern);
             }
-            ThreadUtils.delay(1000, () -> patternLockView.clearPattern());
+            ThreadUtils.delay(500, () -> patternLockView.clearPattern());
             if (isValid) {
                 final Intent intent = new Intent(GhostSmsApplication.getAppContext(), ListSmsActivity.class);
                 startActivity(intent);
@@ -94,7 +93,7 @@ public class LockActivity extends AppCompatActivity {
             if (tmpLockPattern.equals(insertedPattern)) {
                 patternLockView.setViewMode(CORRECT);
                 title.setText(R.string.unlock_app);
-                PreferenceUtils.getPreferences().edit().putString(LOCK_PATTERN, insertedPattern).apply();
+                PreferenceUtils.getPreferences().edit().putString(ApplicationPreferences.LOCK_PATTERN, insertedPattern).apply();
                 return true;
             } else {
                 title.setText(R.string.new_pattern_lock);
