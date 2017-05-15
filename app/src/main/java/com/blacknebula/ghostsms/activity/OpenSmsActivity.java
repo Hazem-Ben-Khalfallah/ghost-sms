@@ -175,13 +175,13 @@ public class OpenSmsActivity extends AbstractCustomToolbarActivity {
 
     private void configureChatView() {
         mChatView.setRightBubbleColor(ContextCompat.getColor(this, R.color.green500));
-        mChatView.setLeftBubbleColor(Color.WHITE);
-        mChatView.setBackgroundColor(ContextCompat.getColor(this, R.color.chat_background));
+        mChatView.setLeftBubbleColor(R.color.colorPrimary);
+        mChatView.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
         mChatView.setRightMessageTextColor(Color.WHITE);
-        mChatView.setLeftMessageTextColor(Color.BLACK);
-        mChatView.setUsernameTextColor(Color.WHITE);
-        mChatView.setSendTimeTextColor(Color.WHITE);
-        mChatView.setDateSeparatorColor(Color.WHITE);
+        mChatView.setLeftMessageTextColor(Color.WHITE);
+        mChatView.setUsernameTextColor(R.color.chat_background);
+        mChatView.setSendTimeTextColor(R.color.chat_background);
+        mChatView.setDateSeparatorColor(R.color.chat_background);
         mChatView.setInputTextHint(getString(R.string.new_message));
         mChatView.setMessageMarginTop(5);
         mChatView.setMessageMarginBottom(5);
