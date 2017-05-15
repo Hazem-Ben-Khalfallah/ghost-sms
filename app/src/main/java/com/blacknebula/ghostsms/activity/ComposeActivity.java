@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.blacknebula.ghostsms.R;
 import com.blacknebula.ghostsms.model.ApplicationParameter;
@@ -46,6 +47,8 @@ public class ComposeActivity extends AbstractCustomToolbarActivity {
     FloatLabeledEditText rsaKeyWrapper;
     @BindView(R.id.rememberKey)
     CheckBox rememberKey;
+    @BindView(R.id.requestKey)
+    TextView requestKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +142,12 @@ public class ComposeActivity extends AbstractCustomToolbarActivity {
         final String publicKeyBase64 = rsaKeyWrapper.getEditText().getText().toString();
         final boolean rememberKeyPublic = rememberKey.isChecked();
         SmsSender.sendSms(this, destinationContact.getInfo(), messageText, publicKeyBase64, rememberKeyPublic);
+    }
+
+    @OnClick(R.id.requestKey)
+    public void requestDestinationPublicKey(View view) {
+        final String sharedText = getString(R.string.request_public_key_message);
+        ContactUtils.share(ComposeActivity.this, sharedText);
     }
 
     private void requestSendSmsPermission() {

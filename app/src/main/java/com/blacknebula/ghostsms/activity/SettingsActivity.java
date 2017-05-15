@@ -25,6 +25,7 @@ import com.blacknebula.ghostsms.GhostSmsApplication;
 import com.blacknebula.ghostsms.R;
 import com.blacknebula.ghostsms.encryption.Encryptor;
 import com.blacknebula.ghostsms.encryption.KeyGenerator;
+import com.blacknebula.ghostsms.utils.ContactUtils;
 import com.blacknebula.ghostsms.utils.Logger;
 import com.blacknebula.ghostsms.utils.PreferenceUtils;
 import com.blacknebula.ghostsms.utils.ThreadUtils;
@@ -169,7 +170,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         final Preference sharePublicKeysPreference = findPreference("share_public_rsa_key");
         sharePublicKeysPreference.setOnPreferenceClickListener(preference -> {
             final String sharedText = String.format("Here is my public key \n%s", PreferenceUtils.getString("public_rsa", ""));
-            share(sharedText);
+            ContactUtils.share(SettingsActivity.this, sharedText);
             return true;
         });
 
@@ -220,15 +221,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             dialog.show();
             return true;
         });
-    }
-
-    private void share(String value) {
-        Logger.info(Logger.Type.GHOST_SMS, "share %s", value);
-        final Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, value);
-        startActivity(Intent.createChooser(intent, "Share"));
     }
 
     @SuppressWarnings("deprecation")

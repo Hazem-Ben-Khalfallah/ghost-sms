@@ -1,11 +1,12 @@
 package com.blacknebula.ghostsms.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 
-import com.blacknebula.ghostsms.transformer.ContactCursorTransformer;
 import com.blacknebula.ghostsms.model.ContactDto;
+import com.blacknebula.ghostsms.transformer.ContactCursorTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,14 @@ public class ContactUtils {
 
         cursor.close();
         return contacts;
+    }
+
+    public static void share(Context context, String message) {
+        final Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, message);
+        context.startActivity(Intent.createChooser(intent, "Share"));
     }
 
 
