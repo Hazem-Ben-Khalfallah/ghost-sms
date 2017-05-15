@@ -128,7 +128,7 @@ public class OpenSmsActivity extends AbstractCustomToolbarActivity {
             } else {
                 // custom dialog
                 final Dialog dialog = new Dialog(OpenSmsActivity.this);
-                dialog.setContentView(R.layout.public_key_fragment);
+                dialog.setContentView(R.layout.public_key_dialog);
                 // fill rsa key if already saved
                 final FloatLabeledEditText rsaKeyWrapper = (FloatLabeledEditText) dialog.findViewById(R.id.rsaKeyWrapper);
                 final Optional<ApplicationParameter<String>> publicKeyParameterOptional = ParameterRepository.getParameter(OpenSmsActivity.this, smsDto.getPhone(), String.class);

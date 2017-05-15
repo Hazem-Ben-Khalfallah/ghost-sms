@@ -4,26 +4,31 @@
         android:key="general_settings"
         android:title="@string/pref_security">
         <Preference
+            android:icon="@mipmap/ic_security"
             android:key="public_rsa"
             android:title="@string/public_rsa_key" />
 
         <Preference
+            android:icon="@mipmap/ic_share"
             android:key="share_public_rsa_key"
             android:summary="@string/share_public_rsa_key_summary"
             android:title="@string/share_public_rsa_key_title" />
 
         <Preference
+            android:icon="@mipmap/ic_settings_backup_restore"
             android:key="reset_rsa_keys"
             android:summary="@string/reset_rsa_key_summary"
             android:title="@string/reset_rsa_keys_title" />
 
         <Preference
+            android:icon="@mipmap/ic_fingerprint"
             android:key="change_pattern_lock"
             android:summary="@string/change_lock_pattern_summary"
             android:title="@string/change_lock_pattern_title" />
 
         <SwitchPreference
             android:defaultValue="true"
+            android:icon="@mipmap/ic_free_breakfast"
             android:key="test_mode"
             android:summary="@string/test_mode_summary"
             android:title="@string/test_mode_title" />

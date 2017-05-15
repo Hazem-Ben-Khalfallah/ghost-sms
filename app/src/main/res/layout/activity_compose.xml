@@ -28,42 +28,9 @@
             app:hint="Enter recipients"
             app:maxRows="1" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="20dp">
-
-            <com.wrapp.floatlabelededittext.FloatLabeledEditText
-                android:id="@+id/rsaKeyWrapper"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingEnd="5dp"
-                android:paddingStart="5dp"
-                app:fletTextAppearance="@style/HeaderTextStyle">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/public_rsa_key"
-                    android:maxLines="3" />
-            </com.wrapp.floatlabelededittext.FloatLabeledEditText>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <CheckBox
-                    android:id="@+id/rememberKey"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:checked="true"
-                    android:paddingEnd="5dp"
-                    android:paddingStart="5dp"
-                    android:text="@string/remember_public_key" />
-            </RelativeLayout>
-        </LinearLayout>
+        <include
+            android:id="@+id/public_key"
+            layout="@layout/public_key_fragment" />
 
 
     </LinearLayout>
