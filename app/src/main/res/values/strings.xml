@@ -24,7 +24,7 @@
     <string name="write_settings_request_permission_message">Permission to write settings is needed for this app</string>
     <string name="encryption_on">Encryption on</string>
     <string name="encryption_off">Encryption off</string>
-    <string name="new_message">new message ...</string>
+    <string name="new_message">new message …</string>
     <string name="message_decryption_fail">oops, something went wrong!</string>
     <string name="chat_username_me">Me</string>
     <string name="invalid_phone_number">Invalid phone number</string>
@@ -44,4 +44,5 @@
     <string name="change_lock_pattern_summary">Click to change access lock pattern</string>
     <string name="current_pattern_lock">Current pattern lock</string>
     <string name="request_public_key_message">I want to send you a secure sms via Ghost SMS app. If you have not already installed this app on your android phone, please do it. Copy your public key from Ghost SMS settings section and send it to me.</string>
+    <string name="settings">Settings</string>
 </resources>
