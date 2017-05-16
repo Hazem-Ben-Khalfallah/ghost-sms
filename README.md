@@ -40,13 +40,9 @@ and public and private key pairs.
 <p>
 <img src="./screenshots/Screenshot_4.png" width="250" height="444">
 </p>
-
-## Upcoming features
-* give the user the possibility to regenerate his keys
-* get other members public key / search for public keys
-* the number of to-be-sent SMS must be displayed in the right bottom corner of a screen
-* share public key
-
+<p>
+<img src="./screenshots/Screenshot_5.png" width="250" height="444">
+</p>
 
 ## Special Thanks
 
