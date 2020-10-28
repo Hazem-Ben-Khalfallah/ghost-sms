@@ -1,4 +1,4 @@
-<img src="./screenshots/logo.png" width="50" height="50">
+![ghost-sms](https://socialify.git.ci/Hazem-Ben-Khalfallah/ghost-sms/image?description=1&descriptionEditable=An%20android%20app%20to%20secure%20SMS%20communication%20based%20on%20RSA%20%26%20AES%20encryption&font=Source%20Code%20Pro&forks=1&language=1&logo=https%3A%2F%2Fgithub.com%2FHazem-Ben-Khalfallah%2Fghost-sms%2Fraw%2Fmaster%2Fscreenshots%2Flogo.png&owner=1&pattern=Overlapping%20Hexagons&theme=Dark)
 
 # Ghost SMS
 Your SMS messages can now be fully secure and safe! Modern encryption algorithms prevent unauthorized 
